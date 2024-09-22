@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "DragonCharacter.generated.h"
 
+class UDragonCharacterInputData;
+class UInputMappingContext;
+
 UCLASS()
 class TPSDRAGONRIDE_API ADragonCharacter : public ACharacter
 {
@@ -25,4 +28,5 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
 };

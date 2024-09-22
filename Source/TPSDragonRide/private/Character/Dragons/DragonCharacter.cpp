@@ -3,6 +3,8 @@
 
 #include "TPSDragonRide/Public/Character/Dragons/DragonCharacter.h"
 
+#include "EnhancedInputComponent.h"
+
 
 // Sets default values
 ADragonCharacter::ADragonCharacter()
@@ -28,5 +30,8 @@ void ADragonCharacter::Tick(float DeltaTime)
 void ADragonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 }
+
 
