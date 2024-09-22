@@ -49,8 +49,8 @@ protected:
 	void BindLookAction(UEnhancedInputComponent* EnhancedInputComponent);
 
 public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputMoveEvent, FVector2d, InputMove);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputLookEvent, FVector2d, InputMove);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputMoveEvent, FVector2D, InputMove);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputLookEvent, FVector2D, InputMove);
 
 	FInputMoveEvent InputMoveEvent;
 	FInputLookEvent InputLookEvent;

@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Character/CharacterSettings.h"
 #include "Character/Dragons/DragonCharacterInputData.h"
+#include "InputMappingContext.h"
 
 void ACharacterController::BeginPlay()
 {
@@ -31,11 +32,11 @@ UInputMappingContext* ACharacterController::LoadInputMappingContextFromConfig()
 
 void ACharacterController::SetupMappingContextIntoController() const
 {
-	ULocalPlayer* Player = GetLocalPlayer();
+	ULocalPlayer* LocalPlayer = GetLocalPlayer();
 
 	if (Player == nullptr) return;
 
-	UEnhancedInputLocalPlayerSubsystem* InputSystem = Player->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 
 	if (InputSystem == nullptr) return;
 	if (InputMappingContext == nullptr) return;
@@ -63,7 +64,7 @@ void ACharacterController::SetupInputComponent()
 
 void ACharacterController::MoveAction(const FInputActionValue& InputActionValue)
 {
-	FVector2d MoveValue = InputActionValue.Get<FVector2d>();
+	FVector2D MoveValue = InputActionValue.Get<FVector2D>();
 
 	InputMoveEvent.Broadcast(MoveValue);
 }
@@ -94,7 +95,7 @@ void ACharacterController::BindMoveAction(UEnhancedInputComponent* EnhancedInput
 
 void ACharacterController::LookAction(const FInputActionValue& InputActionValue)
 {
-	FVector2d LookValue = InputActionValue.Get<FVector2d>();
+	FVector2D LookValue = InputActionValue.Get<FVector2D>();
 
 	InputLookEvent.Broadcast(LookValue);
 }
