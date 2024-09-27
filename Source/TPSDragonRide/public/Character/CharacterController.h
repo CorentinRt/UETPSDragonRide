@@ -48,12 +48,18 @@ protected:
 	void LookAction(const FInputActionValue& InputActionValue);
 	void BindLookAction(UEnhancedInputComponent* EnhancedInputComponent);
 
+
+	void JumpAction(const FInputActionValue& InputActionValue);
+	void BindJumpAction(UEnhancedInputComponent* EnhancedInputComponent);
+
 public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputMoveEvent, FVector2D, InputMove);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputLookEvent, FVector2D, InputMove);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputLookEvent, FVector2D, InputLook);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputJumpEvent, float, InputJump);
 
 	FInputMoveEvent InputMoveEvent;
 	FInputLookEvent InputLookEvent;
+	FInputJumpEvent InputJumpEvent;
 
 #pragma endregion
 };

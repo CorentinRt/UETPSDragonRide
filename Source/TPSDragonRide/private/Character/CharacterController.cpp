@@ -60,6 +60,7 @@ void ACharacterController::SetupInputComponent()
 
 	BindMoveAction(EnhancedInputComponent);
 	BindLookAction(EnhancedInputComponent);
+	BindJumpAction(EnhancedInputComponent);
 }
 
 void ACharacterController::MoveAction(const FInputActionValue& InputActionValue)
@@ -109,5 +110,33 @@ void ACharacterController::BindLookAction(UEnhancedInputComponent* EnhancedInput
 		ETriggerEvent::Started,
 		this,
 		&ACharacterController::LookAction
+		);
+	EnhancedInputComponent->BindAction(
+		InputData->InputLook,
+		ETriggerEvent::Triggered,
+		this,
+		&ACharacterController::LookAction
+		);
+	EnhancedInputComponent->BindAction(
+		InputData->InputLook,
+		ETriggerEvent::Completed,
+		this,
+		&ACharacterController::LookAction
+		);
+}
+
+void ACharacterController::JumpAction(const FInputActionValue& InputActionValue)
+{
+	float JumpValue = InputActionValue.Get<float>();
+	InputJumpEvent.Broadcast(JumpValue);
+}
+
+void ACharacterController::BindJumpAction(UEnhancedInputComponent* EnhancedInputComponent)
+{
+	EnhancedInputComponent->BindAction(
+		InputData->InputJump,
+		ETriggerEvent::Started,
+		this,
+		&ACharacterController::JumpAction
 		);
 }

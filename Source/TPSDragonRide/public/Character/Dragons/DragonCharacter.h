@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "DragonCharacter.generated.h"
 
+class ACharacterController;
 class UDragonCharacterInputData;
 class UInputMappingContext;
 
@@ -28,5 +29,31 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION()
+	void BindReceiveInputToController() const;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterMoveInput, FVector2D, InputMove);
+	FOnDragonCharacterMoveInput OnDragonCharacterMoveInput;
 	
+	UFUNCTION()
+	void ReceiveMoveInput(FVector2D MoveValue);
+
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterLookInput, FVector2D, InputLook);
+	FOnDragonCharacterLookInput OnDragonCharacterLookInput;
+	
+	UFUNCTION()
+	void ReceiveLookInput(FVector2D LookValue);
+
+	
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterJumpInput, float, InputJump);
+	FOnDragonCharacterJumpInput OnDragonCharacterJumpInput;
+	
+	UFUNCTION()
+	void ReceiveJumpInput(float Jumpvalue);
+
+protected:
+	UPROPERTY()
+	TObjectPtr<ACharacterController> ControllerChara;
 };

@@ -4,6 +4,7 @@
 #include "TPSDragonRide/Public/Character/Dragons/DragonCharacter.h"
 
 #include "EnhancedInputComponent.h"
+#include "Character/CharacterController.h"
 
 
 // Sets default values
@@ -17,7 +18,13 @@ ADragonCharacter::ADragonCharacter()
 void ADragonCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (Controller != nullptr)
+	{
+		ControllerChara = Cast<ACharacterController>(Controller);
+	}
+
+	BindReceiveInputToController();
 }
 
 // Called every frame
@@ -32,6 +39,30 @@ void ADragonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+}
+
+void ADragonCharacter::BindReceiveInputToController() const
+{
+	if (ControllerChara == nullptr) return;
+
+	ControllerChara->InputMoveEvent.AddDynamic(this, &ADragonCharacter::ReceiveMoveInput);
+	ControllerChara->InputLookEvent.AddDynamic(this, &ADragonCharacter::ReceiveLookInput);
+	ControllerChara->InputJumpEvent.AddDynamic(this, &ADragonCharacter::ReceiveJumpInput);
+}
+
+void ADragonCharacter::ReceiveMoveInput(FVector2D MoveValue)
+{
+	OnDragonCharacterMoveInput.Broadcast(MoveValue);
+}
+
+void ADragonCharacter::ReceiveLookInput(FVector2D LookValue)
+{
+	OnDragonCharacterLookInput.Broadcast(LookValue);
+}
+
+void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)
+{
+	OnDragonCharacterJumpInput.Broadcast(Jumpvalue);
 }
 
 

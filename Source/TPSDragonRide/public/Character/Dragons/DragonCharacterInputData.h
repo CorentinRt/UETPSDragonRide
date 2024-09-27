@@ -21,4 +21,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UInputAction> InputLook;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UInputAction> InputJump;
 };
