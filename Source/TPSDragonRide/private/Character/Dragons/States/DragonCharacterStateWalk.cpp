@@ -5,6 +5,7 @@
 
 #include "Character/Dragons/DragonCharacter.h"
 #include "Character/Dragons/DragonCharacterStateMachine.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 
 EDragonCharacterStateID UDragonCharacterStateWalk::GetStateID() const
@@ -57,6 +58,11 @@ void UDragonCharacterStateWalk::StateTick(float DeltaTime)
 	if (Character->InputMoveValue.Size() <= 0.1f)
 	{
 		StateMachine->ChangeState(EDragonCharacterStateID::Idle);
+	}
+	else
+	{
+		FVector Dir(Character->InputMoveValue.X, Character->InputMoveValue.Y, 0.f);
+		Character->GetMovementComponent()->AddInputVector(Dir);
 	}
 }
 
