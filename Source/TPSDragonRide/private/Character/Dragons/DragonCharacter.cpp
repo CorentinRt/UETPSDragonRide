@@ -52,12 +52,14 @@ void ADragonCharacter::BindReceiveInputToController() const
 
 void ADragonCharacter::ReceiveMoveInput(FVector2D MoveValue)
 {
-	OnDragonCharacterMoveInput.Broadcast(MoveValue);
+	InputMoveValue = MoveValue;
+	OnDragonCharacterMoveInput.Broadcast(InputMoveValue);
 }
 
 void ADragonCharacter::ReceiveLookInput(FVector2D LookValue)
 {
-	OnDragonCharacterLookInput.Broadcast(LookValue);
+	InputLookValue = LookValue;
+	OnDragonCharacterLookInput.Broadcast(InputLookValue);
 }
 
 void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)

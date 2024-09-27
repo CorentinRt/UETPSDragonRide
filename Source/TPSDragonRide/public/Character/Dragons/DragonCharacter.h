@@ -39,6 +39,8 @@ public:
 	UFUNCTION()
 	void ReceiveMoveInput(FVector2D MoveValue);
 
+	UPROPERTY()
+	FVector2D InputMoveValue;
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterLookInput, FVector2D, InputLook);
 	FOnDragonCharacterLookInput OnDragonCharacterLookInput;
@@ -46,6 +48,8 @@ public:
 	UFUNCTION()
 	void ReceiveLookInput(FVector2D LookValue);
 
+	UPROPERTY()
+	FVector2D InputLookValue;
 	
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterJumpInput, float, InputJump);
 	FOnDragonCharacterJumpInput OnDragonCharacterJumpInput;
