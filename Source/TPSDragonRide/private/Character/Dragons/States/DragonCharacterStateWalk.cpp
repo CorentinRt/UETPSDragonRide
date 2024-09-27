@@ -61,8 +61,10 @@ void UDragonCharacterStateWalk::StateTick(float DeltaTime)
 	}
 	else
 	{
-		FVector Dir(Character->InputMoveValue.X, Character->InputMoveValue.Y, 0.f);
-		Character->GetMovementComponent()->AddInputVector(Dir);
+		FVector DirX(Character->InputMoveValue.X * Character->GetActorRightVector());
+		FVector DirY(Character->InputMoveValue.Y * Character->GetActorForwardVector());
+		FVector Dir = DirX + DirY;
+		Character->AddMovementInput(Dir);
 	}
 }
 
