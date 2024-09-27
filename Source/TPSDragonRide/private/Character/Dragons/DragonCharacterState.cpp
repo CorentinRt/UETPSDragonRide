@@ -6,7 +6,7 @@
 #include "Character/CharacterController.h"
 #include "Character/Dragons/DragonCharacter.h"
 #include "Character/Dragons/DragonCharacterStateMachine.h"
-
+#include "Character/CharacterSettings.h"
 
 // Sets default values for this component's properties
 UDragonCharacterState::UDragonCharacterState()
