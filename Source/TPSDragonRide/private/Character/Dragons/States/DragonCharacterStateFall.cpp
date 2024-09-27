@@ -4,6 +4,8 @@
 #include "Character/Dragons/States/DragonCharacterStateFall.h"
 
 #include "Character/Dragons/DragonCharacter.h"
+#include "Character/Dragons/DragonCharacterStateMachine.h"
+#include "GameFramework/PawnMovementComponent.h"
 
 
 EDragonCharacterStateID UDragonCharacterStateFall::GetStateID() const
@@ -20,6 +22,13 @@ void UDragonCharacterStateFall::StateEnter(EDragonCharacterStateID PreviousState
 {
 	Super::StateEnter(PreviousState);
 
+	GEngine->AddOnScreenDebugMessage(
+			-1,
+			3.f,
+			FColor::Emerald,
+			TEXT("EnterFall")
+		);
+	
 	if (Character == nullptr) return;
 
 	if (FallMontage != nullptr)
@@ -36,4 +45,13 @@ void UDragonCharacterStateFall::StateExit(EDragonCharacterStateID NextState)
 void UDragonCharacterStateFall::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
+
+	if (Character == nullptr) return;
+	
+	if (Character->GetMovementComponent()->IsMovingOnGround())
+	{
+		if (StateMachine == nullptr) return;
+		
+		StateMachine->ChangeState(EDragonCharacterStateID::Idle);
+	}
 }

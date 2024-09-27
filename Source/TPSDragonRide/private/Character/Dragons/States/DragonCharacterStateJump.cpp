@@ -4,6 +4,7 @@
 #include "Character/Dragons/States/DragonCharacterStateJump.h"
 
 #include "Character/Dragons/DragonCharacter.h"
+#include "Character/Dragons/DragonCharacterStateMachine.h"
 
 
 EDragonCharacterStateID UDragonCharacterStateJump::GetStateID() const
@@ -45,4 +46,13 @@ void UDragonCharacterStateJump::StateExit(EDragonCharacterStateID NextState)
 void UDragonCharacterStateJump::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
+
+	if (Character == nullptr) return;
+	
+	if (Character->GetVelocity().Y < 0.f)
+	{
+		if (StateMachine == nullptr) return;
+		
+		StateMachine->ChangeState(EDragonCharacterStateID::Fall);
+	}
 }

@@ -52,10 +52,11 @@ void UDragonCharacterStateIdle::StateTick(float DeltaTime)
 	Super::StateTick(DeltaTime);
 
 	if (Character == nullptr) return;
-	if (StateMachine == nullptr) return;
 
 	if (Character->InputMoveValue.Size() > 0.1f)
 	{
+		if (StateMachine == nullptr) return;
+		
 		StateMachine->ChangeState(EDragonCharacterStateID::Walk);
 	}
 }
