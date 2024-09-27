@@ -49,7 +49,7 @@ void UDragonCharacterStateJump::StateTick(float DeltaTime)
 
 	if (Character == nullptr) return;
 	
-	if (Character->GetVelocity().Y < 0.f)
+	if (Character->GetVelocity().Z < 0.f)
 	{
 		if (StateMachine == nullptr) return;
 		
