@@ -35,7 +35,7 @@ void UDragonCharacterStateMachine::ChangeState(EDragonCharacterStateID NextState
 	EDragonCharacterStateID PreviousStateID = CurrentStateID;
 	CurrentStateID = NextStateID;
 	CurrentState = NextState;
-
+	
 	if (CurrentState != nullptr)
 	{
 		CurrentState->StateEnter(PreviousStateID);
@@ -57,8 +57,9 @@ UDragonCharacterState* UDragonCharacterStateMachine::GetState(EDragonCharacterSt
 
 void UDragonCharacterStateMachine::Tick(float DeltaTime)
 {
+	
 	if (CurrentState == nullptr) return;
-
+	
 	CurrentState->StateTick(DeltaTime);
 }
 
@@ -70,8 +71,8 @@ void UDragonCharacterStateMachine::FindStates()
 	{
 		UDragonCharacterState* State = Cast<UDragonCharacterState>(Component);
 		
-		if (State != nullptr) continue;
-
+		if (State == nullptr) continue;
+		
 		if (State->GetStateID() == EDragonCharacterStateID::None) continue;
 		
 		AllStates.Add(State);

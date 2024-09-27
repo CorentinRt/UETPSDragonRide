@@ -80,11 +80,15 @@ void ADragonCharacter::CreateStateMachine()
 
 void ADragonCharacter::InitStateMachine()
 {
+	if (StateMachine == nullptr) return;
+	
 	StateMachine->Init(this);
 }
 
 void ADragonCharacter::TickStateMachine(float DeltaTime) const
 {
+	if (StateMachine == nullptr) return;
+	
 	StateMachine->Tick(DeltaTime);
 }
 
