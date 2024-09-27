@@ -22,4 +22,10 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, Category="Inputs")
 	TSoftObjectPtr<UInputMappingContext> InputMappingContext;
+
+	UPROPERTY(Config, EditAnywhere, Category="Sensitivity")
+	float MouseVerticalSensitivity;
+
+	UPROPERTY(Config, EditAnywhere, Category="Sensitivity")
+	float MouseHorizontalSensitivity;
 };

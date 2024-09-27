@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "Character/CharacterController.h"
+#include "Character/CharacterSettings.h"
 #include "Character/Dragons/DragonCharacterStateMachine.h"
 
 
@@ -29,6 +30,8 @@ void ADragonCharacter::BeginPlay()
 
 	CreateStateMachine();
 	InitStateMachine();
+
+	InitLookSensitivity();
 }
 
 // Called every frame
@@ -69,16 +72,23 @@ void ADragonCharacter::ReceiveLookInput(FVector2D LookValue)
 	OnDragonCharacterLookInput.Broadcast(InputLookValue);
 }
 
+void ADragonCharacter::InitLookSensitivity()
+{
+	const UCharacterSettings* CharacterSettings = GetDefault<UCharacterSettings>();
+
+	if (CharacterSettings == nullptr) return;
+	
+	LookHorizontalSensitivity = GetDefault<UCharacterSettings>()->MouseHorizontalSensitivity;
+	LookHorizontalSensitivity = GetDefault<UCharacterSettings>()->MouseVerticalSensitivity;
+}
+
 void ADragonCharacter::UpdateLookDir(FVector2D LookDir, float DeltaTime)
 {
 	if (ControllerChara != nullptr)
 	{
-		ControllerChara->AddPitchInput(LookDir.Y * DeltaTime);
-		ControllerChara->AddYawInput(LookDir.X * DeltaTime);
+		ControllerChara->AddPitchInput(LookDir.Y * DeltaTime * LookVerticalSensitivity);
+		ControllerChara->AddYawInput(LookDir.X * DeltaTime * LookHorizontalSensitivity);
 	}
-	
-	//FRotator TempRot(LookDir.Y * DeltaTime, 0.f, LookDir.X * DeltaTime);
-	//AddActorLocalRotation(TempRot * 10.f);
 }
 
 void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)

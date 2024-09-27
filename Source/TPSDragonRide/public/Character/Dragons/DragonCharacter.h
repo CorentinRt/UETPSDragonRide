@@ -56,6 +56,15 @@ public:
 	UPROPERTY()
 	FVector2D InputLookValue;
 
+	UPROPERTY()
+	float LookVerticalSensitivity = 100.f;
+
+	UPROPERTY()
+	float LookHorizontalSensitivity = 100.f;
+
+	UFUNCTION()
+	void InitLookSensitivity();
+	
 	UFUNCTION()
 	void UpdateLookDir(FVector2D LookDir, float DeltaTime);
 	
