@@ -34,7 +34,7 @@ void ACharacterController::SetupMappingContextIntoController() const
 {
 	ULocalPlayer* LocalPlayer = GetLocalPlayer();
 
-	if (Player == nullptr) return;
+	if (LocalPlayer == nullptr) return;
 
 	UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 
