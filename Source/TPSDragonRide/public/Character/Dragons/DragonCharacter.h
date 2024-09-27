@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "DragonCharacter.generated.h"
 
+class UDragonCharacterStateMachine;
 class ACharacterController;
 class UDragonCharacterInputData;
 class UInputMappingContext;
@@ -33,6 +34,7 @@ public:
 	UFUNCTION()
 	void BindReceiveInputToController() const;
 
+#pragma region Move
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterMoveInput, FVector2D, InputMove);
 	FOnDragonCharacterMoveInput OnDragonCharacterMoveInput;
 	
@@ -42,6 +44,9 @@ public:
 	UPROPERTY()
 	FVector2D InputMoveValue;
 
+#pragma endregion
+
+#pragma region Look
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterLookInput, FVector2D, InputLook);
 	FOnDragonCharacterLookInput OnDragonCharacterLookInput;
 	
@@ -50,14 +55,32 @@ public:
 
 	UPROPERTY()
 	FVector2D InputLookValue;
-	
+
+#pragma endregion
+
+#pragma region Jump
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterJumpInput, float, InputJump);
 	FOnDragonCharacterJumpInput OnDragonCharacterJumpInput;
 	
 	UFUNCTION()
 	void ReceiveJumpInput(float Jumpvalue);
 
+#pragma endregion
+	
 protected:
 	UPROPERTY()
 	TObjectPtr<ACharacterController> ControllerChara;
+
+#pragma region State Machine
+public:
+	void CreateStateMachine();
+
+	void InitStateMachine();
+
+	void TickStateMachine(float DeltaTime) const;
+
+protected:
+	TObjectPtr<UDragonCharacterStateMachine> StateMachine;
+	
+#pragma endregion
 };

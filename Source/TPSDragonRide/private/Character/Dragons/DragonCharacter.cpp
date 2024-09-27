@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "Character/CharacterController.h"
+#include "Character/Dragons/DragonCharacterStateMachine.h"
 
 
 // Sets default values
@@ -25,12 +26,17 @@ void ADragonCharacter::BeginPlay()
 	}
 
 	BindReceiveInputToController();
+
+	CreateStateMachine();
+	InitStateMachine();
 }
 
 // Called every frame
 void ADragonCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	TickStateMachine(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -65,6 +71,21 @@ void ADragonCharacter::ReceiveLookInput(FVector2D LookValue)
 void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)
 {
 	OnDragonCharacterJumpInput.Broadcast(Jumpvalue);
+}
+
+void ADragonCharacter::CreateStateMachine()
+{
+	StateMachine = NewObject<UDragonCharacterStateMachine>();
+}
+
+void ADragonCharacter::InitStateMachine()
+{
+	StateMachine->Init(this);
+}
+
+void ADragonCharacter::TickStateMachine(float DeltaTime) const
+{
+	StateMachine->Tick(DeltaTime);
 }
 
 
