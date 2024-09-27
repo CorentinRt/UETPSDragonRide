@@ -65,7 +65,20 @@ void ADragonCharacter::ReceiveMoveInput(FVector2D MoveValue)
 void ADragonCharacter::ReceiveLookInput(FVector2D LookValue)
 {
 	InputLookValue = LookValue;
+	UpdateLookDir(LookValue, GetWorld()->GetDeltaSeconds());
 	OnDragonCharacterLookInput.Broadcast(InputLookValue);
+}
+
+void ADragonCharacter::UpdateLookDir(FVector2D LookDir, float DeltaTime)
+{
+	if (ControllerChara != nullptr)
+	{
+		ControllerChara->AddPitchInput(LookDir.Y * DeltaTime);
+		ControllerChara->AddYawInput(LookDir.X * DeltaTime);
+	}
+	
+	//FRotator TempRot(LookDir.Y * DeltaTime, 0.f, LookDir.X * DeltaTime);
+	//AddActorLocalRotation(TempRot * 10.f);
 }
 
 void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)

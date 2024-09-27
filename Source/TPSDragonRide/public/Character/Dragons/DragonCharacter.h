@@ -56,6 +56,9 @@ public:
 	UPROPERTY()
 	FVector2D InputLookValue;
 
+	UFUNCTION()
+	void UpdateLookDir(FVector2D LookDir, float DeltaTime);
+	
 #pragma endregion
 
 #pragma region Jump
@@ -70,7 +73,7 @@ public:
 protected:
 	UPROPERTY()
 	TObjectPtr<ACharacterController> ControllerChara;
-
+	
 #pragma region State Machine
 public:
 	void CreateStateMachine();

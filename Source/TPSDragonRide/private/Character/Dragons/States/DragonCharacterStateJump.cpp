@@ -5,6 +5,7 @@
 
 #include "Character/Dragons/DragonCharacter.h"
 #include "Character/Dragons/DragonCharacterStateMachine.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 EDragonCharacterStateID UDragonCharacterStateJump::GetStateID() const
@@ -54,5 +55,9 @@ void UDragonCharacterStateJump::StateTick(float DeltaTime)
 		if (StateMachine == nullptr) return;
 		
 		StateMachine->ChangeState(EDragonCharacterStateID::Fall);
+	}
+	else if (Character->GetCharacterMovement()->IsMovingOnGround())
+	{
+		StateMachine->ChangeState(EDragonCharacterStateID::Idle);
 	}
 }
