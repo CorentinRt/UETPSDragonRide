@@ -15,5 +15,6 @@ enum class EDragonCharacterStateID : uint8
  Walk,
  Run,
  Fly,
- Jump
+ Jump,
+ Fall
 };
