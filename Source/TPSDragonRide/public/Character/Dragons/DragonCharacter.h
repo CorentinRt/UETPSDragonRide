@@ -113,6 +113,9 @@ public:
 	UFUNCTION()
 	void ReceiveDiveInput(float DiveValue);
 
+	UPROPERTY()
+	float InputDiveValue;
+
 #pragma endregion
 
 	

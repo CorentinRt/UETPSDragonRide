@@ -167,7 +167,8 @@ void ADragonCharacter::ReceiveFlyInput(float FlyValue)
 #pragma region State Machine
 void ADragonCharacter::ReceiveDiveInput(float DiveValue)
 {
-	OnDragonCharacterDiveInput.Broadcast(DiveValue);
+	InputDiveValue = DiveValue;
+	OnDragonCharacterDiveInput.Broadcast(InputDiveValue);
 }
 
 void ADragonCharacter::CreateStateMachine()
