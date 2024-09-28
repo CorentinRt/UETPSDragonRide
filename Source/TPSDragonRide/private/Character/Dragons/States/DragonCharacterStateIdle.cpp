@@ -5,6 +5,7 @@
 
 #include "Character/Dragons/DragonCharacter.h"
 #include "Character/Dragons/DragonCharacterStateMachine.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 EDragonCharacterStateID UDragonCharacterStateIdle::GetStateID() const

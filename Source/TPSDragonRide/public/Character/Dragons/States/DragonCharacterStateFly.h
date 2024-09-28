@@ -26,4 +26,10 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* FlyMontage;
+
+	UPROPERTY(EditAnywhere)
+	float FlySpeed = 10000.f;
+	
+	UFUNCTION()
+	void AdaptGravityToFly();
 };

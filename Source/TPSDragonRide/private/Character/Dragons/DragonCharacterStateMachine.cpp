@@ -63,6 +63,16 @@ void UDragonCharacterStateMachine::Tick(float DeltaTime)
 	CurrentState->StateTick(DeltaTime);
 }
 
+UDragonCharacterState* UDragonCharacterStateMachine::GetCurrentState() const
+{
+	return CurrentState;
+}
+
+EDragonCharacterStateID UDragonCharacterStateMachine::GetCurrentStateID() const
+{
+	return CurrentStateID;
+}
+
 void UDragonCharacterStateMachine::FindStates()
 {
 	TArray<UActorComponent*> FoundComponents = Character->K2_GetComponentsByClass(UDragonCharacterState::StaticClass());

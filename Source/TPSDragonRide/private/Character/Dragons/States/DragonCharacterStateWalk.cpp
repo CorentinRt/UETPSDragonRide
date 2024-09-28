@@ -5,6 +5,7 @@
 
 #include "Character/Dragons/DragonCharacter.h"
 #include "Character/Dragons/DragonCharacterStateMachine.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 
 
@@ -30,6 +31,8 @@ void UDragonCharacterStateWalk::StateEnter(EDragonCharacterStateID PreviousState
 	);
 	
 	if (Character == nullptr) return;
+
+	Character->GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	
 	if (WalkMontage != nullptr)
 	{

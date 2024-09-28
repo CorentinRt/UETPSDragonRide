@@ -103,7 +103,7 @@ public:
 
 	UPROPERTY()
 	float InputFlyValue;
-
+	
 #pragma endregion 
 	
 protected:

@@ -27,6 +27,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* WalkMontage;
 
+	UPROPERTY(EditAnywhere)
+	float WalkSpeed = 500.f;
+
 	UFUNCTION()
 	void OnReceiveInputJump(float InputJump);
 };

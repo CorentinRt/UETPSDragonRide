@@ -30,6 +30,12 @@ public:
 
 	void Tick(float DeltaTime);
 
+	UFUNCTION(BlueprintCallable)
+	UDragonCharacterState* GetCurrentState() const;
+
+	UFUNCTION()
+	EDragonCharacterStateID GetCurrentStateID() const;
+	
 protected:
 
 	UPROPERTY()

@@ -8,6 +8,7 @@
 #include "Character/CharacterController.h"
 #include "Character/CharacterSettings.h"
 #include "Character/Dragons/DragonCharacterStateMachine.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 
@@ -82,6 +83,8 @@ void ADragonCharacter::ReceiveMoveInput(FVector2D MoveValue)
 	OnDragonCharacterMoveInput.Broadcast(InputMoveValue);
 }
 
+
+#pragma region Look
 void ADragonCharacter::ReceiveLookInput(FVector2D LookValue)
 {
 	InputLookValue = LookValue;
@@ -146,6 +149,7 @@ void ADragonCharacter::LockLookDirYaw()
 
 	SpringArmComponent->SetRelativeRotation(FRotator(SpringArmComponent->GetRelativeRotation().Pitch, 0.f, 0.f));
 }
+#pragma endregion 
 
 void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)
 {
@@ -158,6 +162,8 @@ void ADragonCharacter::ReceiveFlyInput(float FlyValue)
 	OnDragonCharacterFlyInput.Broadcast(InputFlyValue);
 }
 
+
+#pragma region State Machine
 void ADragonCharacter::CreateStateMachine()
 {
 	StateMachine = NewObject<UDragonCharacterStateMachine>();
@@ -176,5 +182,6 @@ void ADragonCharacter::TickStateMachine(float DeltaTime) const
 	
 	StateMachine->Tick(DeltaTime);
 }
+#pragma endregion
 
 
