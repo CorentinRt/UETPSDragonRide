@@ -54,6 +54,8 @@ void ADragonCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	TickStateMachine(DeltaTime);
+
+	CenterLookDir(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -100,9 +102,40 @@ void ADragonCharacter::UpdateLookDir(FVector2D LookDir, float DeltaTime)
 {
 	if (SpringArmComponent == nullptr) return;
 
-	FRotator TempRot = SpringArmComponent->GetRelativeRotation();
+	HasUpdatedLookDir = true;
 	
-	SpringArmComponent->SetRelativeRotation(TempRot + FRotator(LookDir.Y * DeltaTime * LookVerticalSensitivity, LookDir.X * DeltaTime * LookHorizontalSensitivity, 0));
+	FRotator TempRot = SpringArmComponent->GetRelativeRotation();
+
+	FRotator AddRot(0.f, 0.f, 0.f);
+
+	if (FMath::Abs(TempRot.Pitch) < 70.f)
+	{
+		AddRot.Pitch = LookDir.Y * DeltaTime * LookVerticalSensitivity;
+	}
+
+	AddRot.Yaw = LookDir.X * DeltaTime * LookHorizontalSensitivity;
+	
+	// GEngine->AddOnScreenDebugMessage(
+	// 	-1,
+	// 	3.f,
+	// 	FColor::Red,
+	// 	FString::Printf(TEXT("Rotation Pitch : %f"), TempRot.Pitch)
+	// );
+	
+	SpringArmComponent->SetRelativeRotation(TempRot + AddRot);
+}
+
+void ADragonCharacter::CenterLookDir(float DeltaTime)
+{
+	if (SpringArmComponent == nullptr || HasUpdatedLookDir)
+	{
+		HasUpdatedLookDir = false;
+		return;
+	}
+
+	FRotator TempRot = FMath::RInterpTo(SpringArmComponent->GetRelativeRotation(), FRotator(0.f, 0.f, 0.f), DeltaTime, 5.f);
+
+	SpringArmComponent->SetRelativeRotation(TempRot);
 }
 
 void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)

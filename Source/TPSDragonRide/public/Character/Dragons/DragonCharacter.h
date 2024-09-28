@@ -69,6 +69,11 @@ public:
 	
 	UFUNCTION()
 	void UpdateLookDir(FVector2D LookDir, float DeltaTime);
+
+	UFUNCTION()
+	void CenterLookDir(float DeltaTime);
+
+	bool HasUpdatedLookDir = false;
 	
 #pragma endregion
 
