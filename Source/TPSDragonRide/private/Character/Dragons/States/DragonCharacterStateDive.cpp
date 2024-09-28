@@ -5,6 +5,7 @@
 
 #include "Character/Dragons/DragonCharacter.h"
 #include "Character/Dragons/DragonCharacterStateMachine.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 EDragonCharacterStateID UDragonCharacterStateDive::GetStateID() const
@@ -60,5 +61,36 @@ void UDragonCharacterStateDive::StateTick(float DeltaTime)
 		{
 			StateMachine->ChangeState(EDragonCharacterStateID::Fall);
 		}
+	}
+	else
+	{
+		FRotator CurrentRotation = Character->GetActorRotation();
+
+		// Rotation Plongée
+		float TargetPitch = -90.f;
+
+		// Rotation Tonneau
+		float TargetRoll = CurrentRotation.Roll + Character->InputMoveValue.X * DeltaTime * 1500.f;
+
+		// Smooth Rotation
+		FRotator TargetRotation = FRotator(TargetPitch, CurrentRotation.Yaw, TargetRoll);
+		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);
+		Character->SetActorRotation(NewRotation);
+
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			3.f,
+			FColor::Emerald,
+			FString::Printf(TEXT("Dive: %f"), TargetPitch)
+		);
+		
+		FVector NewVelocity = Character->GetCharacterMovement()->Velocity;
+		NewVelocity *= 0.8f;
+
+		FVector ForwardDirection = Character->GetActorForwardVector();
+		
+		NewVelocity += ForwardDirection * 3500.f;
+
+		Character->GetCharacterMovement()->Velocity = NewVelocity;
 	}
 }
