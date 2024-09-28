@@ -61,6 +61,7 @@ void ACharacterController::SetupInputComponent()
 	BindMoveAction(EnhancedInputComponent);
 	BindLookAction(EnhancedInputComponent);
 	BindJumpAction(EnhancedInputComponent);
+	BindFlyAction(EnhancedInputComponent);
 }
 
 void ACharacterController::MoveAction(const FInputActionValue& InputActionValue)
@@ -133,10 +134,44 @@ void ACharacterController::JumpAction(const FInputActionValue& InputActionValue)
 
 void ACharacterController::BindJumpAction(UEnhancedInputComponent* EnhancedInputComponent)
 {
+	if (EnhancedInputComponent == nullptr) return;
+	
 	EnhancedInputComponent->BindAction(
 		InputData->InputJump,
 		ETriggerEvent::Started,
 		this,
 		&ACharacterController::JumpAction
 		);
+}
+
+void ACharacterController::FlyAction(const FInputActionValue& InputActionValue)
+{
+	float FlyValue = InputActionValue.Get<float>();
+	InputFlyEvent.Broadcast(FlyValue);
+}
+
+void ACharacterController::BindFlyAction(UEnhancedInputComponent* EnhancedInputComponent)
+{
+	if (EnhancedInputComponent == nullptr) return;
+	
+	EnhancedInputComponent->BindAction(
+		InputData->InputJump,
+		ETriggerEvent::Started,
+		this,
+		&ACharacterController::FlyAction
+	);
+	
+	EnhancedInputComponent->BindAction(
+		InputData->InputJump,
+		ETriggerEvent::Triggered,
+		this,
+		&ACharacterController::FlyAction
+	);
+
+	EnhancedInputComponent->BindAction(
+		InputData->InputJump,
+		ETriggerEvent::Completed,
+		this,
+		&ACharacterController::FlyAction
+	);
 }

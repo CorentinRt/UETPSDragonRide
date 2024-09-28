@@ -35,11 +35,15 @@ void UDragonCharacterStateFall::StateEnter(EDragonCharacterStateID PreviousState
 	{
 		Character->PlayAnimMontage(FallMontage);
 	}
+
+	Character->OnDragonCharacterFlyInput.AddDynamic(this, &UDragonCharacterStateFall::OnReceiveInputFly);
 }
 
 void UDragonCharacterStateFall::StateExit(EDragonCharacterStateID NextState)
 {
 	Super::StateExit(NextState);
+
+	Character->OnDragonCharacterFlyInput.RemoveDynamic(this, &UDragonCharacterStateFall::OnReceiveInputFly);
 }
 
 void UDragonCharacterStateFall::StateTick(float DeltaTime)
@@ -54,4 +58,11 @@ void UDragonCharacterStateFall::StateTick(float DeltaTime)
 		
 		StateMachine->ChangeState(EDragonCharacterStateID::Idle);
 	}
+}
+
+void UDragonCharacterStateFall::OnReceiveInputFly(float InputFly)
+{
+	if (StateMachine == nullptr) return;
+
+	StateMachine->ChangeState(EDragonCharacterStateID::Fly);
 }

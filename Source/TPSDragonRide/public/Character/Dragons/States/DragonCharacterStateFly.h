@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Character/Dragons/DragonCharacterState.h"
-#include "DragonCharacterStateFall.generated.h"
+#include "DragonCharacterStateFly.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class TPSDRAGONRIDE_API UDragonCharacterStateFall : public UDragonCharacterState
+class TPSDRAGONRIDE_API UDragonCharacterStateFly : public UDragonCharacterState
 {
 	GENERATED_BODY()
 
@@ -25,8 +25,5 @@ public:
 	virtual void StateTick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
-	UAnimMontage* FallMontage;
-
-	UFUNCTION()
-	void OnReceiveInputFly(float InputFly);
+	UAnimMontage* FlyMontage;
 };

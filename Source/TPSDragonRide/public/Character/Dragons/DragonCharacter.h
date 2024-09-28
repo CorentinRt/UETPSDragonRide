@@ -92,6 +92,19 @@ public:
 	void ReceiveJumpInput(float Jumpvalue);
 
 #pragma endregion
+
+#pragma region Fly
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterFlyInput, float, InputFly);
+	FOnDragonCharacterFlyInput OnDragonCharacterFlyInput;
+	
+	UFUNCTION()
+	void ReceiveFlyInput(float FlyValue);
+
+	UPROPERTY()
+	float InputFlyValue;
+
+#pragma endregion 
 	
 protected:
 	UPROPERTY()
