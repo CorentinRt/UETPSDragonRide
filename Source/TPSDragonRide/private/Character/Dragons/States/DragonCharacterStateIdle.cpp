@@ -59,6 +59,12 @@ void UDragonCharacterStateIdle::StateTick(float DeltaTime)
 		
 		StateMachine->ChangeState(EDragonCharacterStateID::Walk);
 	}
+	else if (Character->GetVelocity().Z < 0.f)
+	{
+		if (StateMachine == nullptr) return;
+		
+		StateMachine->ChangeState(EDragonCharacterStateID::Fall);
+	}
 }
 
 void UDragonCharacterStateIdle::OnReceiveInputJump(float InputJump)

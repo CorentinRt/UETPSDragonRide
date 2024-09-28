@@ -59,6 +59,12 @@ void UDragonCharacterStateWalk::StateTick(float DeltaTime)
 	{
 		StateMachine->ChangeState(EDragonCharacterStateID::Idle);
 	}
+	else if (Character->GetVelocity().Z < 0.f)
+	{
+		if (StateMachine == nullptr) return;
+		
+		StateMachine->ChangeState(EDragonCharacterStateID::Fall);
+	}
 	else
 	{
 		Character->SetActorRotation(FRotator(0.f, Character->GetLookRotation().Yaw, 0.f));

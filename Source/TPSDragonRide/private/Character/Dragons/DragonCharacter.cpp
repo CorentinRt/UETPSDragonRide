@@ -25,9 +25,9 @@ ADragonCharacter::ADragonCharacter()
 
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
-	SpringArmComponent->TargetArmLength = 300.f;
+	SpringArmComponent->TargetArmLength = 800.f;
 
-	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 50.f));
+	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 350.f));
 }
 
 // Called when the game starts or when spawned
