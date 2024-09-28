@@ -37,13 +37,19 @@ void UDragonCharacterStateFly::StateEnter(EDragonCharacterStateID PreviousState)
 	{
 		Character->PlayAnimMontage(FlyMontage);
 	}
+
+	Character->OnDragonCharacterDiveInput.AddDynamic(this, &UDragonCharacterStateFly::OnReceiveInputDive);
 }
 
 void UDragonCharacterStateFly::StateExit(EDragonCharacterStateID NextState)
 {
 	Super::StateExit(NextState);
 
+	if (Character == nullptr) return;
+	
 	Character->GetCharacterMovement()->GravityScale = 1.0f;
+
+	Character->OnDragonCharacterDiveInput.RemoveDynamic(this, &UDragonCharacterStateFly::OnReceiveInputDive);
 }
 
 void UDragonCharacterStateFly::StateTick(float DeltaTime)
@@ -96,4 +102,11 @@ void UDragonCharacterStateFly::StateTick(float DeltaTime)
 
 		Character->GetCharacterMovement()->Velocity = NewVelocity;
 	}
+}
+
+void UDragonCharacterStateFly::OnReceiveInputDive(float DiveValue)
+{
+	if (StateMachine == nullptr) return;
+
+	StateMachine->ChangeState(EDragonCharacterStateID::Dive);
 }
