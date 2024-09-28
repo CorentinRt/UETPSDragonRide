@@ -62,6 +62,7 @@ void ACharacterController::SetupInputComponent()
 	BindLookAction(EnhancedInputComponent);
 	BindJumpAction(EnhancedInputComponent);
 	BindFlyAction(EnhancedInputComponent);
+	BindDiveAction(EnhancedInputComponent);
 }
 
 void ACharacterController::MoveAction(const FInputActionValue& InputActionValue)
@@ -173,5 +174,37 @@ void ACharacterController::BindFlyAction(UEnhancedInputComponent* EnhancedInputC
 		ETriggerEvent::Completed,
 		this,
 		&ACharacterController::FlyAction
+	);
+}
+
+void ACharacterController::DiveAction(const FInputActionValue& InputActionValue)
+{
+	float DiveValue = InputActionValue.Get<float>();
+	InputDiveEvent.Broadcast(DiveValue);
+}
+
+void ACharacterController::BindDiveAction(UEnhancedInputComponent* EnhancedInputComponent)
+{
+	if (EnhancedInputComponent == nullptr) return;
+
+	EnhancedInputComponent->BindAction(
+		InputData->InputDive,
+		ETriggerEvent::Started,
+		this,
+		&ACharacterController::DiveAction
+	);
+
+	EnhancedInputComponent->BindAction(
+		InputData->InputDive,
+		ETriggerEvent::Triggered,
+		this,
+		&ACharacterController::DiveAction
+	);
+
+	EnhancedInputComponent->BindAction(
+		InputData->InputDive,
+		ETriggerEvent::Completed,
+		this,
+		&ACharacterController::DiveAction
 	);
 }

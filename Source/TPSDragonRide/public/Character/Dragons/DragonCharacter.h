@@ -105,6 +105,16 @@ public:
 	float InputFlyValue;
 	
 #pragma endregion 
+
+#pragma region Dive
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterDiveInput, float, InputDive);
+	FOnDragonCharacterDiveInput OnDragonCharacterDiveInput;
+
+	UFUNCTION()
+	void ReceiveDiveInput(float DiveValue);
+
+#pragma endregion
+
 	
 protected:
 	UPROPERTY()

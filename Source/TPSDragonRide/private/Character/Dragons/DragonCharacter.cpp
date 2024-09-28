@@ -75,6 +75,7 @@ void ADragonCharacter::BindReceiveInputToController() const
 	ControllerChara->InputLookEvent.AddDynamic(this, &ADragonCharacter::ReceiveLookInput);
 	ControllerChara->InputJumpEvent.AddDynamic(this, &ADragonCharacter::ReceiveJumpInput);
 	ControllerChara->InputFlyEvent.AddDynamic(this, &ADragonCharacter::ReceiveFlyInput);
+	ControllerChara->InputDiveEvent.AddDynamic(this, &ADragonCharacter::ReceiveDiveInput);
 }
 
 void ADragonCharacter::ReceiveMoveInput(FVector2D MoveValue)
@@ -164,6 +165,11 @@ void ADragonCharacter::ReceiveFlyInput(float FlyValue)
 
 
 #pragma region State Machine
+void ADragonCharacter::ReceiveDiveInput(float DiveValue)
+{
+	OnDragonCharacterDiveInput.Broadcast(DiveValue);
+}
+
 void ADragonCharacter::CreateStateMachine()
 {
 	StateMachine = NewObject<UDragonCharacterStateMachine>();

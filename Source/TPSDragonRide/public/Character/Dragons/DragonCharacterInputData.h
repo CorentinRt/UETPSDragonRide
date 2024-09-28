@@ -27,4 +27,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UInputAction> InputFly;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UInputAction> InputDive;
 };
