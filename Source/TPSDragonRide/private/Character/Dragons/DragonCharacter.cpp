@@ -139,7 +139,7 @@ void ADragonCharacter::CenterLookDir(float DeltaTime)
 		return;
 	}
 
-	FRotator TempRot = FMath::RInterpTo(SpringArmComponent->GetRelativeRotation(), FRotator(-15.f, 0.f, 0.f), DeltaTime, 5.f);
+	FRotator TempRot = FMath::RInterpTo(SpringArmComponent->GetRelativeRotation(), FRotator(-15.f, 0.f, 0.f), DeltaTime, 3.f);
 
 	SpringArmComponent->SetRelativeRotation(TempRot);
 }
