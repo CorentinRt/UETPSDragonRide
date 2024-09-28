@@ -25,9 +25,9 @@ ADragonCharacter::ADragonCharacter()
 
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
-	SpringArmComponent->TargetArmLength = 800.f;
+	SpringArmComponent->TargetArmLength = 2000.f;
 
-	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 350.f));
+	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 700.f));
 }
 
 // Called when the game starts or when spawned
@@ -134,7 +134,7 @@ void ADragonCharacter::CenterLookDir(float DeltaTime)
 		return;
 	}
 
-	FRotator TempRot = FMath::RInterpTo(SpringArmComponent->GetRelativeRotation(), FRotator(0.f, 0.f, 0.f), DeltaTime, 5.f);
+	FRotator TempRot = FMath::RInterpTo(SpringArmComponent->GetRelativeRotation(), FRotator(-15.f, 0.f, 0.f), DeltaTime, 5.f);
 
 	SpringArmComponent->SetRelativeRotation(TempRot);
 }
