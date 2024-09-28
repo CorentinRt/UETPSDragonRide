@@ -61,27 +61,29 @@ void UDragonCharacterStateFly::StateTick(float DeltaTime)
 	}
 	else if (Character->InputMoveValue.Size() > 0.1f)
 	{
-		FRotator TempRot = Character->GetActorRotation();
+		// Obtenir la rotation actuelle du dragon
+		FRotator CurrentRotation = Character->GetActorRotation();
 
-		TempRot.Pitch -= Character->InputMoveValue.Y * DeltaTime * 100.f;
+		// Calcul de la direction vers laquelle on veut tourner
+		float TargetPitch = CurrentRotation.Pitch - Character->InputMoveValue.Y * DeltaTime * 500.f;
+		TargetPitch = FMath::Clamp(TargetPitch, -85.f, 85.f);  // Limiter le Pitch entre -85 et 85 degrés
 
-		TempRot.Roll += Character->InputMoveValue.X * DeltaTime * 100.f;
-		
-		if (TempRot.Pitch < -85.f)
-		{
-			TempRot.Pitch = -85.f;
-		}
-		else if (TempRot.Pitch > 85.f)
-		{
-			TempRot.Pitch = 85.f;
-		}
-		
-		Character->SetActorRotation(TempRot);
+		float TargetRoll = Character->InputMoveValue.X * 120.f;  // Inclinaison latérale
+		TargetRoll = FMath::Clamp(TargetRoll, -30.f, 30.f);  // Limiter le Roll à -30 et 30 degrés
 
-		AdaptGravityToFly();
+		// Rotation de Yaw (autour de l'axe vertical, pour tourner)
+		FRotator TargetRotation = FRotator(TargetPitch, CurrentRotation.Yaw, TargetRoll);
+        
+		// Interpolation fluide vers la nouvelle rotation
+		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);  // Change la vitesse d'interpolation ici (3.0f pour plus de douceur)
 
-		Character->AddMovementInput(Character->GetActorForwardVector() * 100.f);
+		// Appliquer la nouvelle rotation au dragon
+		Character->SetActorRotation(NewRotation);
+
+
 	}
+	Character->AddMovementInput(Character->GetActorForwardVector() * 1000.f);
+	AdaptGravityToFly();
 }
 
 void UDragonCharacterStateFly::AdaptGravityToFly()
@@ -96,17 +98,17 @@ void UDragonCharacterStateFly::AdaptGravityToFly()
 
 	FRotator TempRot = Character->GetActorRotation();
 
-	if (TempRot.Yaw > 30.f)
+	if (TempRot.Pitch > 30.f)
 	{
 	
-		Character->GetCharacterMovement()->GravityScale = 2.0f;
+		Character->GetCharacterMovement()->GravityScale = 0.1f;
 	}
-	else if (TempRot.Yaw < -30.f)
+	else if (TempRot.Pitch < -30.f)
 	{
-		Character->GetCharacterMovement()->GravityScale = 0.03f;
+		Character->GetCharacterMovement()->GravityScale = 0.4f;
 	}
 	else
 	{
-		Character->GetCharacterMovement()->GravityScale = 0.05f;
+		Character->GetCharacterMovement()->GravityScale = 0.02f;
 	}
 }
