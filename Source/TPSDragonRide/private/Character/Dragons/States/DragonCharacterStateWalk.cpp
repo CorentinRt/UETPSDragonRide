@@ -61,6 +61,9 @@ void UDragonCharacterStateWalk::StateTick(float DeltaTime)
 	}
 	else
 	{
+		Character->SetActorRotation(FRotator(0.f, Character->GetLookRotation().Yaw, 0.f));
+		Character->LockLookDirYaw();
+		
 		FVector DirX(Character->InputMoveValue.X * Character->GetActorRightVector());
 		FVector DirY(Character->InputMoveValue.Y * Character->GetActorForwardVector());
 		FVector Dir = DirX + DirY;

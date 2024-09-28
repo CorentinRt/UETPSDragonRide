@@ -36,6 +36,7 @@ public:
 	UFUNCTION()
 	void BindReceiveInputToController() const;
 
+
 #pragma region Move
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterMoveInput, FVector2D, InputMove);
 	FOnDragonCharacterMoveInput OnDragonCharacterMoveInput;
@@ -66,12 +67,18 @@ public:
 
 	UFUNCTION()
 	void InitLookSensitivity();
+
+	UFUNCTION()
+	FRotator GetLookRotation();
 	
 	UFUNCTION()
 	void UpdateLookDir(FVector2D LookDir, float DeltaTime);
 
 	UFUNCTION()
 	void CenterLookDir(float DeltaTime);
+
+	UFUNCTION()
+	void LockLookDirYaw();
 
 	bool HasUpdatedLookDir = false;
 	

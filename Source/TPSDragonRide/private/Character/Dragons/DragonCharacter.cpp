@@ -98,6 +98,14 @@ void ADragonCharacter::InitLookSensitivity()
 	LookHorizontalSensitivity = GetDefault<UCharacterSettings>()->MouseVerticalSensitivity;
 }
 
+FRotator ADragonCharacter::GetLookRotation()
+{
+	if (SpringArmComponent == nullptr) return FRotator();
+
+	return SpringArmComponent->GetComponentRotation();
+}
+
+
 void ADragonCharacter::UpdateLookDir(FVector2D LookDir, float DeltaTime)
 {
 	if (SpringArmComponent == nullptr) return;
@@ -115,13 +123,6 @@ void ADragonCharacter::UpdateLookDir(FVector2D LookDir, float DeltaTime)
 
 	AddRot.Yaw = LookDir.X * DeltaTime * LookHorizontalSensitivity;
 	
-	// GEngine->AddOnScreenDebugMessage(
-	// 	-1,
-	// 	3.f,
-	// 	FColor::Red,
-	// 	FString::Printf(TEXT("Rotation Pitch : %f"), TempRot.Pitch)
-	// );
-	
 	SpringArmComponent->SetRelativeRotation(TempRot + AddRot);
 }
 
@@ -136,6 +137,13 @@ void ADragonCharacter::CenterLookDir(float DeltaTime)
 	FRotator TempRot = FMath::RInterpTo(SpringArmComponent->GetRelativeRotation(), FRotator(0.f, 0.f, 0.f), DeltaTime, 5.f);
 
 	SpringArmComponent->SetRelativeRotation(TempRot);
+}
+
+void ADragonCharacter::LockLookDirYaw()
+{
+	if (SpringArmComponent == nullptr) return;
+
+	SpringArmComponent->SetRelativeRotation(FRotator(SpringArmComponent->GetRelativeRotation().Pitch, 0.f, 0.f));
 }
 
 void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)
