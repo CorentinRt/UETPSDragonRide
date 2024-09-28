@@ -29,7 +29,4 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float FlySpeed = 10000.f;
-	
-	UFUNCTION()
-	void AdaptGravityToFly();
 };

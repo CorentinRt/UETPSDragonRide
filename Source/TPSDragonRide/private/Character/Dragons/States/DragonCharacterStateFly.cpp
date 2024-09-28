@@ -56,59 +56,44 @@ void UDragonCharacterStateFly::StateTick(float DeltaTime)
 	{
 		if (StateMachine != nullptr)
 		{
-			StateMachine->ChangeState(EDragonCharacterStateID::Idle);
+			if (Character->GetCharacterMovement()->IsMovingOnGround())
+			{
+				StateMachine->ChangeState(EDragonCharacterStateID::Idle);
+			}
+			else
+			{
+				StateMachine->ChangeState(EDragonCharacterStateID::Fall);
+			}
 		}
-	}
-	else if (Character->InputMoveValue.Size() > 0.1f)
-	{
-		// Obtenir la rotation actuelle du dragon
-		FRotator CurrentRotation = Character->GetActorRotation();
-
-		// Calcul de la direction vers laquelle on veut tourner
-		float TargetPitch = CurrentRotation.Pitch - Character->InputMoveValue.Y * DeltaTime * 500.f;
-		TargetPitch = FMath::Clamp(TargetPitch, -85.f, 85.f);  // Limiter le Pitch entre -85 et 85 degrés
-
-		float TargetRoll = Character->InputMoveValue.X * 120.f;  // Inclinaison latérale
-		TargetRoll = FMath::Clamp(TargetRoll, -30.f, 30.f);  // Limiter le Roll à -30 et 30 degrés
-
-		// Rotation de Yaw (autour de l'axe vertical, pour tourner)
-		FRotator TargetRotation = FRotator(TargetPitch, CurrentRotation.Yaw, TargetRoll);
-        
-		// Interpolation fluide vers la nouvelle rotation
-		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);  // Change la vitesse d'interpolation ici (3.0f pour plus de douceur)
-
-		// Appliquer la nouvelle rotation au dragon
-		Character->SetActorRotation(NewRotation);
-
-
-	}
-	Character->AddMovementInput(Character->GetActorForwardVector() * 1000.f);
-	AdaptGravityToFly();
-}
-
-void UDragonCharacterStateFly::AdaptGravityToFly()
-{
-	if (Character == nullptr) return;
-	
-	if (StateMachine->GetCurrentStateID() != EDragonCharacterStateID::Fly)
-	{
-		Character->GetCharacterMovement()->GravityScale = 1.0f;
-		return;
-	}
-
-	FRotator TempRot = Character->GetActorRotation();
-
-	if (TempRot.Pitch > 30.f)
-	{
-	
-		Character->GetCharacterMovement()->GravityScale = 0.1f;
-	}
-	else if (TempRot.Pitch < -30.f)
-	{
-		Character->GetCharacterMovement()->GravityScale = 0.4f;
 	}
 	else
 	{
-		Character->GetCharacterMovement()->GravityScale = 0.02f;
+		FRotator CurrentRotation = Character->GetActorRotation();
+
+		// Rotation Plongée
+		float TargetPitch = CurrentRotation.Pitch - Character->InputMoveValue.Y * DeltaTime * 1000.f;
+		TargetPitch = FMath::Clamp(TargetPitch, -60.f, 60.f);
+
+		// Rotation Tonneau
+		float TargetRoll = Character->InputMoveValue.X * 60.f;
+		TargetRoll = FMath::Clamp(TargetRoll, -60.f, 60.f);
+
+		// Rotation Tourner
+		float TargetYaw = CurrentRotation.Yaw + Character->InputMoveValue.X * DeltaTime * 1500.f;
+
+		// Smooth Rotation
+		FRotator TargetRotation = FRotator(TargetPitch, TargetYaw, TargetRoll);
+		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);
+		Character->SetActorRotation(NewRotation);
+
+		
+		FVector NewVelocity = Character->GetCharacterMovement()->Velocity;
+		NewVelocity *= 0.8f;
+
+		FVector ForwardDirection = Character->GetActorForwardVector();
+		
+		NewVelocity += ForwardDirection * 2500.f;
+
+		Character->GetCharacterMovement()->Velocity = NewVelocity;
 	}
 }
