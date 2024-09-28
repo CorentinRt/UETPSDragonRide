@@ -25,11 +25,9 @@ ADragonCharacter::ADragonCharacter()
 
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
-	SpringArmComponent->TargetArmLength = 300;
+	SpringArmComponent->TargetArmLength = 300.f;
 
 	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 50.f));
-
-	SpringArmComponent->bUsePawnControlRotation = true;
 }
 
 // Called when the game starts or when spawned
@@ -100,11 +98,11 @@ void ADragonCharacter::InitLookSensitivity()
 
 void ADragonCharacter::UpdateLookDir(FVector2D LookDir, float DeltaTime)
 {
-	if (ControllerChara != nullptr)
-	{
-		ControllerChara->AddPitchInput(LookDir.Y * DeltaTime * LookVerticalSensitivity);
-		ControllerChara->AddYawInput(LookDir.X * DeltaTime * LookHorizontalSensitivity);
-	}
+	if (SpringArmComponent == nullptr) return;
+
+	FRotator TempRot = SpringArmComponent->GetRelativeRotation();
+	
+	SpringArmComponent->SetRelativeRotation(TempRot + FRotator(LookDir.Y * DeltaTime * LookVerticalSensitivity, LookDir.X * DeltaTime * LookHorizontalSensitivity, 0));
 }
 
 void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)
