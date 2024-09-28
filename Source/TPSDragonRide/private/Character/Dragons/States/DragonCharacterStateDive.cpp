@@ -21,6 +21,13 @@ void UDragonCharacterStateDive::StateEnter(EDragonCharacterStateID PreviousState
 {
 	Super::StateEnter(PreviousState);
 
+	GEngine->AddOnScreenDebugMessage(
+			-1,
+			3.f,
+			FColor::Emerald,
+			TEXT("EnterDive")
+		);
+	
 	if (Character == nullptr) return;
 
 	if (DiveMontage != nullptr)
