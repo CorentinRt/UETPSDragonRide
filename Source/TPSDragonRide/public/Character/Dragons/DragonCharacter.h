@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "DragonCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
 class UDragonCharacterStateMachine;
 class ACharacterController;
 class UDragonCharacterInputData;
@@ -82,6 +84,12 @@ public:
 protected:
 	UPROPERTY()
 	TObjectPtr<ACharacterController> ControllerChara;
+
+	UPROPERTY()
+	TObjectPtr<UCameraComponent> CameraComponent;
+
+	UPROPERTY()
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
 	
 #pragma region State Machine
 public:

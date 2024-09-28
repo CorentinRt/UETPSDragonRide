@@ -4,9 +4,11 @@
 #include "TPSDragonRide/Public/Character/Dragons/DragonCharacter.h"
 
 #include "EnhancedInputComponent.h"
+#include "Camera/CameraComponent.h"
 #include "Character/CharacterController.h"
 #include "Character/CharacterSettings.h"
 #include "Character/Dragons/DragonCharacterStateMachine.h"
+#include "GameFramework/SpringArmComponent.h"
 
 
 // Sets default values
@@ -14,6 +16,20 @@ ADragonCharacter::ADragonCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
+
+	SpringArmComponent->SetupAttachment(RootComponent);
+
+	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	SpringArmComponent->TargetArmLength = 300;
+
+	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 50.f));
+
+	SpringArmComponent->bUsePawnControlRotation = true;
 }
 
 // Called when the game starts or when spawned
