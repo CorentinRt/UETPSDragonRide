@@ -64,5 +64,12 @@ void UDragonCharacterStateFall::OnReceiveInputFly(float InputFly)
 {
 	if (StateMachine == nullptr) return;
 
+	GEngine->AddOnScreenDebugMessage(
+			-1,
+			3.f,
+			FColor::Orange,
+			TEXT("Fly trigger")
+		);
+	
 	StateMachine->ChangeState(EDragonCharacterStateID::Fly);
 }

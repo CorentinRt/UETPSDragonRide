@@ -155,21 +155,21 @@ void ACharacterController::BindFlyAction(UEnhancedInputComponent* EnhancedInputC
 	if (EnhancedInputComponent == nullptr) return;
 	
 	EnhancedInputComponent->BindAction(
-		InputData->InputJump,
+		InputData->InputFly,
 		ETriggerEvent::Started,
 		this,
 		&ACharacterController::FlyAction
 	);
 	
 	EnhancedInputComponent->BindAction(
-		InputData->InputJump,
+		InputData->InputFly,
 		ETriggerEvent::Triggered,
 		this,
 		&ACharacterController::FlyAction
 	);
 
 	EnhancedInputComponent->BindAction(
-		InputData->InputJump,
+		InputData->InputFly,
 		ETriggerEvent::Completed,
 		this,
 		&ACharacterController::FlyAction
