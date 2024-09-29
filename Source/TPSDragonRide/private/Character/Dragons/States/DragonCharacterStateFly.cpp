@@ -31,7 +31,7 @@ void UDragonCharacterStateFly::StateEnter(EDragonCharacterStateID PreviousState)
 	
 	if (Character == nullptr) return;
 
-	Character->GetCharacterMovement()->MaxWalkSpeed = FlySpeed;
+	Character->GetCharacterMovement()->GravityScale = 0.f;
 	
 	if (FlyMontage != nullptr)
 	{
@@ -46,7 +46,8 @@ void UDragonCharacterStateFly::StateExit(EDragonCharacterStateID NextState)
 	Super::StateExit(NextState);
 
 	if (Character == nullptr) return;
-	
+
+	if (NextState != EDragonCharacterStateID::Fly && NextState != EDragonCharacterStateID::Dive)
 	Character->GetCharacterMovement()->GravityScale = 1.0f;
 
 	Character->OnDragonCharacterDiveInput.RemoveDynamic(this, &UDragonCharacterStateFly::OnReceiveInputDive);
