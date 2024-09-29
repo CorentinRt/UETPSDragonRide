@@ -208,3 +208,21 @@ void ACharacterController::BindDiveAction(UEnhancedInputComponent* EnhancedInput
 		&ACharacterController::DiveAction
 	);
 }
+
+void ACharacterController::BoostFlyAction(const FInputActionValue& InputActionValue)
+{
+	float BoostValue = InputActionValue.Get<float>();
+	InputBoostFlyEvent.Broadcast(BoostValue);
+}
+
+void ACharacterController::BindBoostFlyAction(UEnhancedInputComponent* EnhancedInputComponent)
+{
+	if (EnhancedInputComponent == nullptr) return;
+
+	EnhancedInputComponent->BindAction(
+		InputData->InputBoostFly,
+		ETriggerEvent::Started,
+		this,
+		&ACharacterController::BoostFlyAction
+	);
+}

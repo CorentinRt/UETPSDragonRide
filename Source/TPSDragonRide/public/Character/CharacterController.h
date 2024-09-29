@@ -58,18 +58,24 @@ protected:
 	void DiveAction(const FInputActionValue& InputActionValue);
 	void BindDiveAction(UEnhancedInputComponent* EnhancedInputComponent);
 
+	void BoostFlyAction(const FInputActionValue& InputActionValue);
+	void BindBoostFlyAction(UEnhancedInputComponent* EnhancedInputComponent);
+
 public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputMoveEvent, FVector2D, InputMove);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputLookEvent, FVector2D, InputLook);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputJumpEvent, float, InputJump);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputFlyEvent, float, InputFly);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputDiveEvent, float, InputDive);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInputBoostFlyEvent, float, InputBoostFly);
 
 	FInputMoveEvent InputMoveEvent;
 	FInputLookEvent InputLookEvent;
 	FInputJumpEvent InputJumpEvent;
 	FInputJumpEvent InputFlyEvent;
 	FInputJumpEvent InputDiveEvent;
+	FInputBoostFlyEvent InputBoostFlyEvent;
+	
 
 #pragma endregion
 };

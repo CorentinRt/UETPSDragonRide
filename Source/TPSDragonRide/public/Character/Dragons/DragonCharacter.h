@@ -118,6 +118,16 @@ public:
 
 #pragma endregion
 
+#pragma region BoostFly
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterBoostFlyInput, float, InputBoostFly);
+	FOnDragonCharacterBoostFlyInput OnDragonCharacterBoostFlyInput;
+
+	UFUNCTION()
+	void ReceiveBoostFlyInput(float BoostValue);
+	
+#pragma endregion 
+	
 	
 protected:
 	UPROPERTY()

@@ -30,4 +30,7 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UInputAction> InputDive;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UInputAction> InputBoostFly;
 };

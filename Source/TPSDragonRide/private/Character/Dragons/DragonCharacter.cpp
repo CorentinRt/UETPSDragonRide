@@ -76,6 +76,7 @@ void ADragonCharacter::BindReceiveInputToController() const
 	ControllerChara->InputJumpEvent.AddDynamic(this, &ADragonCharacter::ReceiveJumpInput);
 	ControllerChara->InputFlyEvent.AddDynamic(this, &ADragonCharacter::ReceiveFlyInput);
 	ControllerChara->InputDiveEvent.AddDynamic(this, &ADragonCharacter::ReceiveDiveInput);
+	ControllerChara->InputBoostFlyEvent.AddDynamic(this, &ADragonCharacter::ReceiveBoostFlyInput);
 }
 
 void ADragonCharacter::ReceiveMoveInput(FVector2D MoveValue)
@@ -169,6 +170,11 @@ void ADragonCharacter::ReceiveDiveInput(float DiveValue)
 {
 	InputDiveValue = DiveValue;
 	OnDragonCharacterDiveInput.Broadcast(InputDiveValue);
+}
+
+void ADragonCharacter::ReceiveBoostFlyInput(float BoostValue)
+{
+	OnDragonCharacterBoostFlyInput.Broadcast(BoostValue);
 }
 
 void ADragonCharacter::CreateStateMachine()
