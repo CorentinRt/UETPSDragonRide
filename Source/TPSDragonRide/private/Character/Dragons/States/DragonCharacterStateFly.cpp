@@ -33,6 +33,9 @@ void UDragonCharacterStateFly::StateEnter(EDragonCharacterStateID PreviousState)
 
 	Character->GetCharacterMovement()->GravityScale = 0.f;
 	
+	CurrentFlySpeed = Character->GetCharacterMovement()->Velocity.Size();
+	
+	
 	if (FlyMontage != nullptr)
 	{
 		Character->PlayAnimMontage(FlyMontage);
@@ -47,8 +50,15 @@ void UDragonCharacterStateFly::StateExit(EDragonCharacterStateID NextState)
 
 	if (Character == nullptr) return;
 
-	if (NextState != EDragonCharacterStateID::Fly && NextState != EDragonCharacterStateID::Dive)
-	Character->GetCharacterMovement()->GravityScale = 1.0f;
+	if (!(NextState == EDragonCharacterStateID::Fly || NextState == EDragonCharacterStateID::Fall || NextState == EDragonCharacterStateID::Dive))
+	{
+		CurrentGravityApplied = 0.f;
+	}
+	
+	if (NextState != EDragonCharacterStateID::Fly || NextState != EDragonCharacterStateID::Dive)
+	{
+		Character->GetCharacterMovement()->GravityScale = 1.0f;
+	}
 
 	Character->OnDragonCharacterDiveInput.RemoveDynamic(this, &UDragonCharacterStateFly::OnReceiveInputDive);
 }
@@ -171,14 +181,22 @@ void UDragonCharacterStateFly::HandleFly(float DeltaTime)
 			FColor::Green,
 			TEXT("Look Down")
 		);
-		
-		CurrentFlySpeed = FMath::FInterpTo(CurrentFlySpeed, MaxFlySpeed, DeltaTime, FlySpeedAcceleration);
+
+		if (CurrentFlySpeed < MaxFlySpeed)
+		{
+			CurrentFlySpeed = FMath::FInterpTo(CurrentFlySpeed, MaxFlySpeed, DeltaTime, FlySpeedAcceleration);
+		}
 		CurrentGravityApplied = FMath::FInterpTo(CurrentGravityApplied, 0.f, DeltaTime, GravityAppliedAcceleration);
 
 		Character->GetCharacterMovement()->Velocity = (Character->GetActorForwardVector() * CurrentFlySpeed) + (TempDown * CurrentGravityApplied);
 	}
 	else
 	{
+		if (CurrentFlySpeed < MaxFlySpeed / 2.f)
+		{
+			CurrentFlySpeed = FMath::FInterpTo(CurrentFlySpeed, MaxFlySpeed / 2.f, DeltaTime, FlySpeedAcceleration);
+		}
+		
 		Character->GetCharacterMovement()->Velocity = (Character->GetActorForwardVector() * CurrentFlySpeed) + (TempDown * CurrentGravityApplied / 2.f);
 	}
 

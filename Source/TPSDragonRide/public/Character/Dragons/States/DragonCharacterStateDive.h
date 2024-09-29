@@ -26,4 +26,18 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* DiveMontage;
+
+
+	UPROPERTY()
+	float CurrentDiveSpeed;
+	UPROPERTY(EditAnywhere)
+	float MaxDiveSpeed = 15000.f;
+	UPROPERTY(EditAnywhere)
+	float DiveSpeedAcceleration = 1.f;
+
+	UFUNCTION()
+	void HandleDiveRotation(float DeltaTime);
+	
+	UFUNCTION()
+	void HandleDive(float DeltaTime);
 };
