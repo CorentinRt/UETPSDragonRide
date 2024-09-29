@@ -42,6 +42,7 @@ void UDragonCharacterStateFly::StateEnter(EDragonCharacterStateID PreviousState)
 	}
 
 	Character->OnDragonCharacterDiveInput.AddDynamic(this, &UDragonCharacterStateFly::OnReceiveInputDive);
+	Character->OnDragonCharacterBoostFlyInput.AddDynamic(this, &UDragonCharacterStateFly::OnReceiveInputBoostFly);
 }
 
 void UDragonCharacterStateFly::StateExit(EDragonCharacterStateID NextState)
@@ -50,17 +51,18 @@ void UDragonCharacterStateFly::StateExit(EDragonCharacterStateID NextState)
 
 	if (Character == nullptr) return;
 
-	if (!(NextState == EDragonCharacterStateID::Fly || NextState == EDragonCharacterStateID::Fall || NextState == EDragonCharacterStateID::Dive))
+	if (!(NextState == EDragonCharacterStateID::Fly || NextState == EDragonCharacterStateID::Fall || NextState == EDragonCharacterStateID::Dive || NextState == EDragonCharacterStateID::BoostFly))
 	{
 		CurrentGravityApplied = 0.f;
 	}
 	
-	if (NextState != EDragonCharacterStateID::Fly || NextState != EDragonCharacterStateID::Dive)
+	if (!(NextState == EDragonCharacterStateID::Fly || NextState == EDragonCharacterStateID::Dive || NextState == EDragonCharacterStateID::BoostFly))
 	{
 		Character->GetCharacterMovement()->GravityScale = 1.0f;
 	}
 
 	Character->OnDragonCharacterDiveInput.RemoveDynamic(this, &UDragonCharacterStateFly::OnReceiveInputDive);
+	Character->OnDragonCharacterBoostFlyInput.RemoveDynamic(this, &UDragonCharacterStateFly::OnReceiveInputBoostFly);
 }
 
 void UDragonCharacterStateFly::StateTick(float DeltaTime)
@@ -219,4 +221,11 @@ void UDragonCharacterStateFly::OnReceiveInputDive(float DiveValue)
 	if (StateMachine == nullptr) return;
 
 	StateMachine->ChangeState(EDragonCharacterStateID::Dive);
+}
+
+void UDragonCharacterStateFly::OnReceiveInputBoostFly(float BoostFlyValue)
+{
+	if (StateMachine == nullptr) return;
+
+	StateMachine->ChangeState(EDragonCharacterStateID::BoostFly);
 }

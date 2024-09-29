@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Character/Dragons/DragonCharacterState.h"
-#include "DragonCharacterStateFly.generated.h"
+#include "DragonCharacterStateBoostFly.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class TPSDRAGONRIDE_API UDragonCharacterStateFly : public UDragonCharacterState
+class TPSDRAGONRIDE_API UDragonCharacterStateBoostFly : public UDragonCharacterState
 {
 	GENERATED_BODY()
 
@@ -25,40 +25,27 @@ public:
 	virtual void StateTick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
-	UAnimMontage* FlyMontage;
-
-	// UPROPERTY(EditAnywhere)
-	// float FlySpeed = 10000.f;
+	UAnimMontage* BoostFlyMontage;
 
 
-#pragma region Fly Behavior
+	UPROPERTY(EditAnywhere)
+	float MaxBoostFlySpeed = 16000.f;
+	
+	UPROPERTY(EditAnywhere)
+	float BoostFlyDuration = 1.f;
 
+	UPROPERTY(EditAnywhere)
+	float BoostFlyAcceleration = 4.f;
+	
 	UPROPERTY()
-	float CurrentFlySpeed;
-	UPROPERTY(EditAnywhere)
-	float MaxFlySpeed = 12000.f;
-	UPROPERTY(EditAnywhere)
-	float FlySpeedAcceleration = 1.f;
-
-	UPROPERTY()
-	float CurrentGravityApplied;
-	UPROPERTY(EditAnywhere)
-	float MaxGravityApplied = 6000.f;
-	UPROPERTY(EditAnywhere)
-	float GravityAppliedAcceleration = 0.5f;
+	float CurrentBoostFlyDuration;
 
 	UFUNCTION()
-	void HandleFlyRotation(float DeltaTime);
+	void HandleBoostFlyDuration(float DeltaTime);
 
 	UFUNCTION()
-	void HandleFly(float DeltaTime);
-	
-#pragma endregion 
-	
-	
-	UFUNCTION()
-	void OnReceiveInputDive(float DiveValue);
+	void HandleBoostFlyVelocity(float DeltaTime);
 
 	UFUNCTION()
-	void OnReceiveInputBoostFly(float BoostFlyValue);
+	void HandleBoostFlyRotation(float DeltaTime);
 };

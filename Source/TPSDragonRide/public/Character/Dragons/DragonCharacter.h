@@ -128,14 +128,23 @@ public:
 	
 #pragma endregion 
 	
+public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetCameraFOVToDefault();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void SetCameraFOVToFlyBoost();
 	
 protected:
 	UPROPERTY()
 	TObjectPtr<ACharacterController> ControllerChara;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
+	UPROPERTY()
+	float DefaultFOVValue;
+	
 	UPROPERTY()
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 	

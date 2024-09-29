@@ -63,6 +63,7 @@ void ACharacterController::SetupInputComponent()
 	BindJumpAction(EnhancedInputComponent);
 	BindFlyAction(EnhancedInputComponent);
 	BindDiveAction(EnhancedInputComponent);
+	BindBoostFlyAction(EnhancedInputComponent);
 }
 
 void ACharacterController::MoveAction(const FInputActionValue& InputActionValue)

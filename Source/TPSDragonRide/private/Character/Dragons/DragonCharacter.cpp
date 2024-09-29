@@ -19,16 +19,13 @@ ADragonCharacter::ADragonCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
-
+	
 	SpringArmComponent->SetupAttachment(RootComponent);
-
 	CameraComponent->SetupAttachment(SpringArmComponent);
-
 	SpringArmComponent->TargetArmLength = 2000.f;
-
 	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 700.f));
+	
 }
 
 // Called when the game starts or when spawned
