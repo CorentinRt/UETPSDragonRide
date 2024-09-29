@@ -32,6 +32,8 @@ void UDragonCharacterStateDive::StateEnter(EDragonCharacterStateID PreviousState
 	if (Character == nullptr) return;
 
 	CurrentDiveSpeed = Character->GetCharacterMovement()->Velocity.Size();
+
+	Character->SetCameraFOVToFlyBoost();
 	
 	if (DiveMontage != nullptr)
 	{
@@ -44,6 +46,10 @@ void UDragonCharacterStateDive::StateEnter(EDragonCharacterStateID PreviousState
 void UDragonCharacterStateDive::StateExit(EDragonCharacterStateID NextState)
 {
 	Super::StateExit(NextState);
+
+	if (Character == nullptr) return;
+
+	Character->SetCameraFOVToDefault();
 }
 
 void UDragonCharacterStateDive::StateTick(float DeltaTime)
