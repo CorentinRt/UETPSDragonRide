@@ -74,6 +74,7 @@ void UDragonCharacterStateFly::StateTick(float DeltaTime)
 	}
 	else
 	{
+		/*
 		FRotator CurrentRotation = Character->GetActorRotation();
 
 		// Rotation Plongée
@@ -101,7 +102,97 @@ void UDragonCharacterStateFly::StateTick(float DeltaTime)
 		NewVelocity += ForwardDirection * 2500.f;
 
 		Character->GetCharacterMovement()->Velocity = NewVelocity;
+
+		*/
 	}
+
+	HandleFlyRotation(DeltaTime);
+	HandleFly(DeltaTime);
+}
+
+void UDragonCharacterStateFly::HandleFlyRotation(float DeltaTime)
+{
+	FRotator CurrentRotation = Character->GetActorRotation();
+
+	// Rotation Plongée
+	float TargetPitch = CurrentRotation.Pitch - Character->InputMoveValue.Y * DeltaTime * 1000.f;
+	TargetPitch = FMath::Clamp(TargetPitch, -60.f, 60.f);
+
+	// Rotation Tonneau
+	float TargetRoll = Character->InputMoveValue.X * 60.f;
+	TargetRoll = FMath::Clamp(TargetRoll, -60.f, 60.f);
+
+	// Rotation Tourner
+	float TargetYaw = CurrentRotation.Yaw + Character->InputMoveValue.X * DeltaTime * 1500.f;
+
+	// Smooth Rotation
+	FRotator TargetRotation = FRotator(TargetPitch, TargetYaw, TargetRoll);
+	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);
+	Character->SetActorRotation(NewRotation);
+}
+
+void UDragonCharacterStateFly::HandleFly(float DeltaTime)
+{
+	if (Character == nullptr) return;
+
+	FVector TempCharaFwd = Character->GetActorForwardVector();
+
+	FVector TempWorldFwd = Character->GetActorForwardVector();
+	TempWorldFwd.Z = 0.0f;
+
+	float DotProduct = FVector::DotProduct(TempCharaFwd, TempWorldFwd);
+
+	float CosTheta = DotProduct / (TempCharaFwd.Size() * TempWorldFwd.Size());
+	float AngleRadians = FMath::Acos(CosTheta);
+	float AngleDegrees = FMath::RadiansToDegrees(AngleRadians);
+
+	FVector TempDown(0.f, 0.f, -1.f);
+	
+	if (AngleDegrees > 50.f && TempCharaFwd.Z > 0.f)
+	{
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			3.f,
+			FColor::Blue,
+			TEXT("Look Up")
+		);
+		
+		CurrentFlySpeed = FMath::FInterpTo(CurrentFlySpeed, 0.f, DeltaTime, FlySpeedAcceleration);
+		CurrentGravityApplied = FMath::FInterpTo(CurrentGravityApplied, MaxGravityApplied, DeltaTime, GravityAppliedAcceleration);
+
+		Character->GetCharacterMovement()->Velocity = (Character->GetActorForwardVector() * CurrentFlySpeed) + (TempDown * CurrentGravityApplied);
+	}
+	else if (AngleDegrees > 20.f && TempCharaFwd.Z < 0.f)
+	{
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			3.f,
+			FColor::Green,
+			TEXT("Look Down")
+		);
+		
+		CurrentFlySpeed = FMath::FInterpTo(CurrentFlySpeed, MaxFlySpeed, DeltaTime, FlySpeedAcceleration);
+		CurrentGravityApplied = FMath::FInterpTo(CurrentGravityApplied, 0.f, DeltaTime, GravityAppliedAcceleration);
+
+		Character->GetCharacterMovement()->Velocity = (Character->GetActorForwardVector() * CurrentFlySpeed) + (TempDown * CurrentGravityApplied);
+	}
+	else
+	{
+		Character->GetCharacterMovement()->Velocity = (Character->GetActorForwardVector() * CurrentFlySpeed) + (TempDown * CurrentGravityApplied / 2.f);
+	}
+
+	GEngine->AddOnScreenDebugMessage(
+			-1,
+			3.f,
+			FColor::Red,
+			FString::Printf(TEXT("Fly Speed: %f"), CurrentFlySpeed)
+		);
+	GEngine->AddOnScreenDebugMessage(
+			-1,
+			3.f,
+			FColor::Yellow,
+			FString::Printf(TEXT("Gravity : %f"), CurrentGravityApplied)
+		);
 }
 
 void UDragonCharacterStateFly::OnReceiveInputDive(float DiveValue)

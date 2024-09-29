@@ -30,6 +30,32 @@ public:
 	UPROPERTY(EditAnywhere)
 	float FlySpeed = 10000.f;
 
+
+#pragma region Fly Behavior
+
+	UPROPERTY()
+	float CurrentFlySpeed;
+	UPROPERTY(EditAnywhere)
+	float MaxFlySpeed = 12000.f;
+	UPROPERTY(EditAnywhere)
+	float FlySpeedAcceleration = 1.f;
+
+	UPROPERTY()
+	float CurrentGravityApplied;
+	UPROPERTY(EditAnywhere)
+	float MaxGravityApplied = 6000.f;
+	UPROPERTY(EditAnywhere)
+	float GravityAppliedAcceleration = 0.5f;
+
+	UFUNCTION()
+	void HandleFlyRotation(float DeltaTime);
+
+	UFUNCTION()
+	void HandleFly(float DeltaTime);
+	
+#pragma endregion 
+	
+	
 	UFUNCTION()
 	void OnReceiveInputDive(float DiveValue);
 };
