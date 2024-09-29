@@ -25,7 +25,6 @@ ADragonCharacter::ADragonCharacter()
 	CameraComponent->SetupAttachment(SpringArmComponent);
 	SpringArmComponent->TargetArmLength = 2000.f;
 	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 700.f));
-	
 }
 
 // Called when the game starts or when spawned
@@ -38,6 +37,11 @@ void ADragonCharacter::BeginPlay()
 		ControllerChara = Cast<ACharacterController>(Controller);
 	}
 
+	if (CameraComponent != nullptr)
+	{
+		CameraDefaultPosition = CameraComponent->GetRelativeLocation();
+	}
+	
 	BindReceiveInputToController();
 
 	CreateStateMachine();
@@ -54,6 +58,7 @@ void ADragonCharacter::Tick(float DeltaTime)
 	TickStateMachine(DeltaTime);
 
 	CenterLookDir(DeltaTime);
+	HandleCameraPosition(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -172,6 +177,49 @@ void ADragonCharacter::ReceiveDiveInput(float DiveValue)
 void ADragonCharacter::ReceiveBoostFlyInput(float BoostValue)
 {
 	OnDragonCharacterBoostFlyInput.Broadcast(BoostValue);
+}
+
+
+void ADragonCharacter::HandleCameraPosition(float DeltaTime)
+{
+	if (CameraComponent == nullptr) return;
+	
+	FVector CurrentRelLocation = CameraComponent->GetRelativeLocation();
+
+	CurrentRelLocation.Y = FMath::FInterpTo(CurrentRelLocation.Y, (CameraYOffsets + CameraDefaultPosition.Y) * CurrentCameraPosition, DeltaTime, 2.f);
+
+	GEngine->AddOnScreenDebugMessage(
+				-1,
+				3.f,
+				FColor::Orange,
+				FString::Printf(TEXT("CameraXOffset: %f"), CurrentRelLocation.Y)
+			);
+	
+	CameraComponent->SetRelativeLocation(CurrentRelLocation);
+}
+
+void ADragonCharacter::SetCameraTargetPositionToLeft()
+{
+	if (CameraComponent == nullptr) return;
+	if (CurrentCameraPosition == -1) return;
+
+	CurrentCameraPosition = -1;
+}
+
+void ADragonCharacter::SetCameraTargetPositionToCenter()
+{
+	if (CameraComponent == nullptr) return;
+	if (CurrentCameraPosition == 0) return;
+
+	CurrentCameraPosition = 0;
+}
+
+void ADragonCharacter::SetCameraTargetPositionToRight()
+{
+	if (CameraComponent == nullptr) return;
+	if (CurrentCameraPosition == 1) return;
+
+	CurrentCameraPosition = 1;
 }
 
 void ADragonCharacter::CreateStateMachine()

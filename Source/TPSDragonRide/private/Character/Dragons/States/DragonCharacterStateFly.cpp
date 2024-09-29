@@ -51,6 +51,8 @@ void UDragonCharacterStateFly::StateExit(EDragonCharacterStateID NextState)
 
 	if (Character == nullptr) return;
 
+	Character->SetCameraTargetPositionToCenter();
+	
 	if (!(NextState == EDragonCharacterStateID::Fly || NextState == EDragonCharacterStateID::Fall || NextState == EDragonCharacterStateID::Dive || NextState == EDragonCharacterStateID::BoostFly))
 	{
 		CurrentGravityApplied = 0.f;
@@ -148,6 +150,21 @@ void UDragonCharacterStateFly::HandleFly(float DeltaTime)
 {
 	if (Character == nullptr) return;
 
+	if (Character->InputMoveValue.X < -0.1f)
+	{
+		Character->SetCameraTargetPositionToLeft();
+	}
+	else if (Character->InputMoveValue.X > 0.1f)
+	{
+		Character->SetCameraTargetPositionToRight();
+	}
+	else
+	{
+		Character->SetCameraTargetPositionToCenter();
+	}
+
+	
+	
 	FVector TempCharaFwd = Character->GetActorForwardVector();
 
 	FVector TempWorldFwd = Character->GetActorForwardVector();

@@ -139,14 +139,40 @@ protected:
 	UPROPERTY()
 	TObjectPtr<ACharacterController> ControllerChara;
 
+#pragma region Camera
+	
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UCameraComponent> CameraComponent;
+	
+	UPROPERTY()
+	FVector CameraDefaultPosition;
 
+	UPROPERTY()
+	int CurrentCameraPosition = 0;
+
+	UPROPERTY(EditAnywhere)
+	float CameraYOffsets = 800.f;
+	
+	UFUNCTION()
+	void HandleCameraPosition(float DeltaTime);
+
+public:
+	UFUNCTION()
+	void SetCameraTargetPositionToLeft();
+	UFUNCTION()
+	void SetCameraTargetPositionToCenter();
+	UFUNCTION()
+	void SetCameraTargetPositionToRight();
+
+protected:
 	UPROPERTY()
 	float DefaultFOVValue;
 	
 	UPROPERTY()
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+#pragma endregion
+
 	
 #pragma region State Machine
 public:
