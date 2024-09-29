@@ -87,39 +87,6 @@ void UDragonCharacterStateFly::StateTick(float DeltaTime)
 			}
 		}
 	}
-	else
-	{
-		/*
-		FRotator CurrentRotation = Character->GetActorRotation();
-
-		// Rotation Plongée
-		float TargetPitch = CurrentRotation.Pitch - Character->InputMoveValue.Y * DeltaTime * 1000.f;
-		TargetPitch = FMath::Clamp(TargetPitch, -60.f, 60.f);
-
-		// Rotation Tonneau
-		float TargetRoll = Character->InputMoveValue.X * 60.f;
-		TargetRoll = FMath::Clamp(TargetRoll, -60.f, 60.f);
-
-		// Rotation Tourner
-		float TargetYaw = CurrentRotation.Yaw + Character->InputMoveValue.X * DeltaTime * 1500.f;
-
-		// Smooth Rotation
-		FRotator TargetRotation = FRotator(TargetPitch, TargetYaw, TargetRoll);
-		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);
-		Character->SetActorRotation(NewRotation);
-
-		
-		FVector NewVelocity = Character->GetCharacterMovement()->Velocity;
-		NewVelocity *= 0.8f;
-
-		FVector ForwardDirection = Character->GetActorForwardVector();
-		
-		NewVelocity += ForwardDirection * 2500.f;
-
-		Character->GetCharacterMovement()->Velocity = NewVelocity;
-
-		*/
-	}
 
 	HandleFlyRotation(DeltaTime);
 	HandleFly(DeltaTime);
