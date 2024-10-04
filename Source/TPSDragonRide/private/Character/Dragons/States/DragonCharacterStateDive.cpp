@@ -31,13 +31,14 @@ void UDragonCharacterStateDive::StateEnter(EDragonCharacterStateID PreviousState
 	
 	if (Character == nullptr) return;
 
-	CurrentDiveSpeed = Character->GetCharacterMovement()->Velocity.Size();
+	
+	CurrentDiveSpeed = Character->GetCharacterMovement()->Velocity.Size();	// dive speed = velocity -> smooth transition
+	Character->SetCameraFOVToFlyBoost();	// FOV -> fly Boost
 
-	Character->SetCameraFOVToFlyBoost();
 	
 	if (DiveMontage != nullptr)
 	{
-		Character->PlayAnimMontage(DiveMontage);
+		Character->PlayAnimMontage(DiveMontage);	// Play anim
 	}
 
 	
@@ -49,7 +50,7 @@ void UDragonCharacterStateDive::StateExit(EDragonCharacterStateID NextState)
 
 	if (Character == nullptr) return;
 
-	Character->SetCameraFOVToDefault();
+	Character->SetCameraFOVToDefault();	// Reset FOV
 }
 
 void UDragonCharacterStateDive::StateTick(float DeltaTime)
@@ -59,70 +60,71 @@ void UDragonCharacterStateDive::StateTick(float DeltaTime)
 	if (Character == nullptr) return;
 	if (StateMachine == nullptr) return;
 	
-	if (Character->InputDiveValue == 0.f)
+	if (Character->InputDiveValue == 0.f)	// stop pressing dive
 	{
-		if (Character->InputFlyValue != 0.f)
+		if (Character->InputFlyValue != 0.f)	// press fly -> Fly
 		{
 			StateMachine->ChangeState(EDragonCharacterStateID::Fly);
 		}
-		else
+		else    // -> Fall
 		{
 			StateMachine->ChangeState(EDragonCharacterStateID::Fall);
 		}
 	}
-	else
+	else     // pressing fly
 	{
-		// FRotator CurrentRotation = Character->GetActorRotation();
-		//
-		// // Rotation Plongée
-		// float TargetPitch = -90.f;
-		//
-		// // Rotation Tonneau
-		// float TargetRoll = CurrentRotation.Roll + Character->InputMoveValue.X * DeltaTime * 1500.f;
-		//
-		// // Smooth Rotation
-		// FRotator TargetRotation = FRotator(TargetPitch, CurrentRotation.Yaw, TargetRoll);
-		// FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);
-		// Character->SetActorRotation(NewRotation);
-
-		// GEngine->AddOnScreenDebugMessage(
-		// 	-1,
-		// 	3.f,
-		// 	FColor::Emerald,
-		// 	FString::Printf(TEXT("Dive: %f"), TargetPitch)
-		// );
+		// Obsolete
+		/*
+		FRotator CurrentRotation = Character->GetActorRotation();
 		
-		// FVector NewVelocity = Character->GetCharacterMovement()->Velocity;
-		// NewVelocity *= 0.8f;
-		//
-		// FVector ForwardDirection = Character->GetActorForwardVector();
-		//
-		// NewVelocity += ForwardDirection * 3500.f;
-		//
-		// Character->GetCharacterMovement()->Velocity = NewVelocity;
+		// Rotation Plongée
+		float TargetPitch = -90.f;
+		
+		// Rotation Tonneau
+		float TargetRoll = CurrentRotation.Roll + Character->InputMoveValue.X * DeltaTime * 1500.f;
+		
+		// Smooth Rotation
+		FRotator TargetRotation = FRotator(TargetPitch, CurrentRotation.Yaw, TargetRoll);
+		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);
+		Character->SetActorRotation(NewRotation);
+
+		GEngine->AddOnScreenDebugMessage(
+			-1,
+			3.f,
+			FColor::Emerald,
+			FString::Printf(TEXT("Dive: %f"), TargetPitch)
+		);
+		
+		FVector NewVelocity = Character->GetCharacterMovement()->Velocity;
+		NewVelocity *= 0.8f;
+		
+		FVector ForwardDirection = Character->GetActorForwardVector();
+		
+		NewVelocity += ForwardDirection * 3500.f;
+		
+		Character->GetCharacterMovement()->Velocity = NewVelocity;
+		*/
 	}
 
 	HandleDiveRotation(DeltaTime);
 	HandleDive(DeltaTime);
 }
 
-void UDragonCharacterStateDive::HandleDiveRotation(float DeltaTime)
+void UDragonCharacterStateDive::HandleDiveRotation(float DeltaTime)	// Manager rotation Dive behaviors
 {
 	FRotator CurrentRotation = Character->GetActorRotation();
 
-	// Rotation Plongée
-	float TargetPitch = -90.f;
+	float TargetPitch = -90.f;	// Rotation Dive
 
-	// Rotation Tonneau
-	float TargetRoll = CurrentRotation.Roll + Character->InputMoveValue.X * DeltaTime * 1500.f;
+	float TargetRoll = CurrentRotation.Roll + Character->InputMoveValue.X * DeltaTime * 1500.f;	// Rotation Roll
 
-	// Smooth Rotation
+	
 	FRotator TargetRotation = FRotator(TargetPitch, CurrentRotation.Yaw, TargetRoll);
-	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);
+	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);	// Smooth Rotation
 	Character->SetActorRotation(NewRotation);
 }
 
-void UDragonCharacterStateDive::HandleDive(float DeltaTime)
+void UDragonCharacterStateDive::HandleDive(float DeltaTime)	// Manager movements Dive behaviors
 {
 	if (Character == nullptr) return;
 	
@@ -130,10 +132,12 @@ void UDragonCharacterStateDive::HandleDive(float DeltaTime)
 
 	Character->GetCharacterMovement()->Velocity = Character->GetActorForwardVector() * CurrentDiveSpeed;
 
+	/*
 	GEngine->AddOnScreenDebugMessage(
 			-1,
 			3.f,
 			FColor::Purple,
 			FString::Printf(TEXT("Dive: %f"), CurrentDiveSpeed)
 		);
+	*/
 }
