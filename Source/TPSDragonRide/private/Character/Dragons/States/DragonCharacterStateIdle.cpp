@@ -33,10 +33,10 @@ void UDragonCharacterStateIdle::StateEnter(EDragonCharacterStateID PreviousState
 	
 	if (IdleMontage != nullptr)
 	{
-		Character->PlayAnimMontage(IdleMontage);
+		Character->PlayAnimMontage(IdleMontage);	// Play Anim
 	}
 
-	Character->OnDragonCharacterJumpInput.AddDynamic(this, &UDragonCharacterStateIdle::OnReceiveInputJump);
+	Character->OnDragonCharacterJumpInput.AddDynamic(this, &UDragonCharacterStateIdle::OnReceiveInputJump);	// Bind Jump
 }
 
 void UDragonCharacterStateIdle::StateExit(EDragonCharacterStateID NextState)
@@ -54,13 +54,13 @@ void UDragonCharacterStateIdle::StateTick(float DeltaTime)
 
 	if (Character == nullptr) return;
 
-	if (Character->InputMoveValue.Size() > 0.1f)
+	if (Character->InputMoveValue.Size() > 0.1f)	// Joystick move -> Walk
 	{
 		if (StateMachine == nullptr) return;
 		
 		StateMachine->ChangeState(EDragonCharacterStateID::Walk);
 	}
-	else if (Character->GetVelocity().Z < 0.f)
+	else if (Character->GetVelocity().Z < 0.f)	// velocity fall -> Fall
 	{
 		if (StateMachine == nullptr) return;
 		
@@ -68,7 +68,7 @@ void UDragonCharacterStateIdle::StateTick(float DeltaTime)
 	}
 }
 
-void UDragonCharacterStateIdle::OnReceiveInputJump(float InputJump)
+void UDragonCharacterStateIdle::OnReceiveInputJump(float InputJump)	// Press Jump -> Jump
 {
 	if (StateMachine == nullptr) return;
 	
