@@ -31,18 +31,18 @@ void UDragonCharacterStateFly::StateEnter(EDragonCharacterStateID PreviousState)
 	
 	if (Character == nullptr) return;
 
+	// Set velocity and gravity to smooth transitions
 	Character->GetCharacterMovement()->GravityScale = 0.f;
-	
 	CurrentFlySpeed = Character->GetCharacterMovement()->Velocity.Size();
 	
 	
 	if (FlyMontage != nullptr)
 	{
-		Character->PlayAnimMontage(FlyMontage);
+		Character->PlayAnimMontage(FlyMontage);	// Play Anim
 	}
 
-	Character->OnDragonCharacterDiveInput.AddDynamic(this, &UDragonCharacterStateFly::OnReceiveInputDive);
-	Character->OnDragonCharacterBoostFlyInput.AddDynamic(this, &UDragonCharacterStateFly::OnReceiveInputBoostFly);
+	Character->OnDragonCharacterDiveInput.AddDynamic(this, &UDragonCharacterStateFly::OnReceiveInputDive);	// Bind Dive
+	Character->OnDragonCharacterBoostFlyInput.AddDynamic(this, &UDragonCharacterStateFly::OnReceiveInputBoostFly);	// Bind BoostFly
 }
 
 void UDragonCharacterStateFly::StateExit(EDragonCharacterStateID NextState)
@@ -92,19 +92,19 @@ void UDragonCharacterStateFly::StateTick(float DeltaTime)
 	HandleFly(DeltaTime);
 }
 
-void UDragonCharacterStateFly::HandleFlyRotation(float DeltaTime)
+void UDragonCharacterStateFly::HandleFlyRotation(float DeltaTime)	// Manage rotation fly behaviors
 {
 	FRotator CurrentRotation = Character->GetActorRotation();
 
-	// Rotation Plongée
+	// Rotation Dive
 	float TargetPitch = CurrentRotation.Pitch - Character->InputMoveValue.Y * DeltaTime * 1000.f;
 	TargetPitch = FMath::Clamp(TargetPitch, -60.f, 60.f);
 
-	// Rotation Tonneau
+	// Rotation Roll
 	float TargetRoll = Character->InputMoveValue.X * 60.f;
 	TargetRoll = FMath::Clamp(TargetRoll, -60.f, 60.f);
 
-	// Rotation Tourner
+	// Rotation Turn
 	float TargetYaw = CurrentRotation.Yaw + Character->InputMoveValue.X * DeltaTime * 1500.f;
 
 	// Smooth Rotation
@@ -113,31 +113,31 @@ void UDragonCharacterStateFly::HandleFlyRotation(float DeltaTime)
 	Character->SetActorRotation(NewRotation);
 }
 
-void UDragonCharacterStateFly::HandleFly(float DeltaTime)
+void UDragonCharacterStateFly::HandleFly(float DeltaTime)	// Manage moving fly behaviors
 {
 	if (Character == nullptr) return;
 
-	if (Character->InputMoveValue.X < -0.1f)
+	
+	if (Character->InputMoveValue.X < -0.1f)	// if joystick left -> camera to left
 	{
 		Character->SetCameraTargetPositionToLeft();
 	}
-	else if (Character->InputMoveValue.X > 0.1f)
+	else if (Character->InputMoveValue.X > 0.1f)	// if joystick right -> camera to right
 	{
 		Character->SetCameraTargetPositionToRight();
 	}
-	else
+	else     // if joystick center -> camera to center
 	{
 		Character->SetCameraTargetPositionToCenter();
 	}
 
-	
 	
 	FVector TempCharaFwd = Character->GetActorForwardVector();
 
 	FVector TempWorldFwd = Character->GetActorForwardVector();
 	TempWorldFwd.Z = 0.0f;
 
-	float DotProduct = FVector::DotProduct(TempCharaFwd, TempWorldFwd);
+	float DotProduct = FVector::DotProduct(TempCharaFwd, TempWorldFwd);	// get angle dragon by dot product
 
 	float CosTheta = DotProduct / (TempCharaFwd.Size() * TempWorldFwd.Size());
 	float AngleRadians = FMath::Acos(CosTheta);
@@ -145,29 +145,15 @@ void UDragonCharacterStateFly::HandleFly(float DeltaTime)
 
 	FVector TempDown(0.f, 0.f, -1.f);
 	
-	if (AngleDegrees > 50.f && TempCharaFwd.Z > 0.f)
+	if (AngleDegrees > 50.f && TempCharaFwd.Z > 0.f)	// Look Up -> decrease fly speed + increase gravity applied
 	{
-		GEngine->AddOnScreenDebugMessage(
-			-1,
-			3.f,
-			FColor::Blue,
-			TEXT("Look Up")
-		);
-		
 		CurrentFlySpeed = FMath::FInterpTo(CurrentFlySpeed, 0.f, DeltaTime, FlySpeedAcceleration);
 		CurrentGravityApplied = FMath::FInterpTo(CurrentGravityApplied, MaxGravityApplied, DeltaTime, GravityAppliedAcceleration);
 
 		Character->GetCharacterMovement()->Velocity = (Character->GetActorForwardVector() * CurrentFlySpeed) + (TempDown * CurrentGravityApplied);
 	}
-	else if (AngleDegrees > 20.f && TempCharaFwd.Z < 0.f)
+	else if (AngleDegrees > 20.f && TempCharaFwd.Z < 0.f)	// Look Down -> increase fly speed + decrease gravity applied
 	{
-		GEngine->AddOnScreenDebugMessage(
-			-1,
-			3.f,
-			FColor::Green,
-			TEXT("Look Down")
-		);
-
 		if (CurrentFlySpeed < MaxFlySpeed)
 		{
 			CurrentFlySpeed = FMath::FInterpTo(CurrentFlySpeed, MaxFlySpeed, DeltaTime, FlySpeedAcceleration);
@@ -176,7 +162,7 @@ void UDragonCharacterStateFly::HandleFly(float DeltaTime)
 
 		Character->GetCharacterMovement()->Velocity = (Character->GetActorForwardVector() * CurrentFlySpeed) + (TempDown * CurrentGravityApplied);
 	}
-	else
+	else    // Look default -> increase fly speed / 2
 	{
 		if (CurrentFlySpeed < MaxFlySpeed / 2.f)
 		{
@@ -185,7 +171,8 @@ void UDragonCharacterStateFly::HandleFly(float DeltaTime)
 		
 		Character->GetCharacterMovement()->Velocity = (Character->GetActorForwardVector() * CurrentFlySpeed) + (TempDown * CurrentGravityApplied / 2.f);
 	}
-
+	
+	/*
 	GEngine->AddOnScreenDebugMessage(
 			-1,
 			3.f,
@@ -198,6 +185,7 @@ void UDragonCharacterStateFly::HandleFly(float DeltaTime)
 			FColor::Yellow,
 			FString::Printf(TEXT("Gravity : %f"), CurrentGravityApplied)
 		);
+	*/
 }
 
 void UDragonCharacterStateFly::OnReceiveInputDive(float DiveValue)
