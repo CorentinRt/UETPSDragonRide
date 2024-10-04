@@ -32,11 +32,11 @@ void UDragonCharacterStateBoostFly::StateEnter(EDragonCharacterStateID PreviousS
 	
 	if (Character == nullptr) return;
 
-	Character->SetCameraFOVToFlyBoost();
+	Character->SetCameraFOVToFlyBoost();	// FOV FlyBoost
 	
 	if (BoostFlyMontage != nullptr)
 	{
-		Character->PlayAnimMontage(BoostFlyMontage);
+		Character->PlayAnimMontage(BoostFlyMontage);	// Play Anim
 	}
 
 }
@@ -45,11 +45,11 @@ void UDragonCharacterStateBoostFly::StateExit(EDragonCharacterStateID NextState)
 {
 	Super::StateExit(NextState);
 
-	CurrentBoostFlyDuration = 0.f;
+	CurrentBoostFlyDuration = 0.f;	// Reset current Duration Boost Fly
 	
 	if (Character == nullptr) return;
 
-	Character->SetCameraFOVToDefault();
+	Character->SetCameraFOVToDefault();	// reset FOV
 }
 
 void UDragonCharacterStateBoostFly::StateTick(float DeltaTime)
@@ -64,32 +64,32 @@ void UDragonCharacterStateBoostFly::StateTick(float DeltaTime)
 	HandleBoostFlyDuration(DeltaTime);
 }
 
-void UDragonCharacterStateBoostFly::HandleBoostFlyDuration(float DeltaTime)
+void UDragonCharacterStateBoostFly::HandleBoostFlyDuration(float DeltaTime)	// Manage duration BoostFly
 {
-	if (CurrentBoostFlyDuration >= BoostFlyDuration)
+	if (CurrentBoostFlyDuration >= BoostFlyDuration)	// finished Duration
 	{
 		if (StateMachine == nullptr) return;
 		
-		if (Character->InputFlyValue != 0.f)
+		if (Character->InputFlyValue != 0.f)	// press fly -> fly
 		{
 			StateMachine->ChangeState(EDragonCharacterStateID::Fly);
 		}
-		else if (Character->InputDiveValue != 0.f)
+		else if (Character->InputDiveValue != 0.f)	// PressDive -> Dive
 		{
 			StateMachine->ChangeState(EDragonCharacterStateID::Dive);
 		}
-		else
+		else   // default -> fall
 		{
 			StateMachine->ChangeState(EDragonCharacterStateID::Fall);
 		}
 	}
-	else
+	else     // unfinished duration
 	{
-		CurrentBoostFlyDuration += DeltaTime;
+		CurrentBoostFlyDuration += DeltaTime;	// Decrement current Duration
 	}
 }
 
-void UDragonCharacterStateBoostFly::HandleBoostFlyVelocity(float DeltaTime)
+void UDragonCharacterStateBoostFly::HandleBoostFlyVelocity(float DeltaTime)	// Manage Smooth Velocity
 {
 	float CurrentVelocity = Character->GetCharacterMovement()->Velocity.Size();
 
@@ -98,23 +98,19 @@ void UDragonCharacterStateBoostFly::HandleBoostFlyVelocity(float DeltaTime)
 	Character->GetCharacterMovement()->Velocity = Character->GetActorForwardVector() * CurrentVelocity;
 }
 
-void UDragonCharacterStateBoostFly::HandleBoostFlyRotation(float DeltaTime)
+void UDragonCharacterStateBoostFly::HandleBoostFlyRotation(float DeltaTime)	// Manage rotation BoostFly behaviors
 {
 	FRotator CurrentRotation = Character->GetActorRotation();
 
-	// Rotation Plongée
-	float TargetPitch = CurrentRotation.Pitch - Character->InputMoveValue.Y * DeltaTime * 1000.f;
+	float TargetPitch = CurrentRotation.Pitch - Character->InputMoveValue.Y * DeltaTime * 1000.f;	// Rotation Dive
 	TargetPitch = FMath::Clamp(TargetPitch, -60.f, 60.f);
-
-	// Rotation Tonneau
-	float TargetRoll = Character->InputMoveValue.X * 60.f;
+	
+	float TargetRoll = Character->InputMoveValue.X * 60.f;	// Rotation Roll
 	TargetRoll = FMath::Clamp(TargetRoll, -60.f, 60.f);
-
-	// Rotation Tourner
-	float TargetYaw = CurrentRotation.Yaw + Character->InputMoveValue.X * DeltaTime * 1500.f;
-
-	// Smooth Rotation
+	
+	float TargetYaw = CurrentRotation.Yaw + Character->InputMoveValue.X * DeltaTime * 1500.f;	// Rotation Turn
+	
 	FRotator TargetRotation = FRotator(TargetPitch, TargetYaw, TargetRoll);
-	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);
+	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);	// Smooth Rotation
 	Character->SetActorRotation(NewRotation);
 }
