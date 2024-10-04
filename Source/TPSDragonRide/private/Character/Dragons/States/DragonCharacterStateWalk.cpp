@@ -32,14 +32,14 @@ void UDragonCharacterStateWalk::StateEnter(EDragonCharacterStateID PreviousState
 	
 	if (Character == nullptr) return;
 
-	Character->GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	Character->GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;	// Speed = walkSpeed
 	
 	if (WalkMontage != nullptr)
 	{
-		Character->PlayAnimMontage(WalkMontage);
+		Character->PlayAnimMontage(WalkMontage);	// Play Anim
 	}
 
-	Character->OnDragonCharacterJumpInput.AddDynamic(this, &UDragonCharacterStateWalk::OnReceiveInputJump);
+	Character->OnDragonCharacterJumpInput.AddDynamic(this, &UDragonCharacterStateWalk::OnReceiveInputJump); // Bind Jump
 }
 
 void UDragonCharacterStateWalk::StateExit(EDragonCharacterStateID NextState)
@@ -58,29 +58,34 @@ void UDragonCharacterStateWalk::StateTick(float DeltaTime)
 	if (Character == nullptr) return;
 	if (StateMachine == nullptr) return;
 
-	if (Character->InputMoveValue.Size() <= 0.1f)
+	if (Character->InputMoveValue.Size() <= 0.1f)	// joystick not move -> idle
 	{
 		StateMachine->ChangeState(EDragonCharacterStateID::Idle);
 	}
-	else if (Character->GetVelocity().Z < 0.f)
+	else if (Character->GetVelocity().Z < 0.f)	// velocity fall -> fall
 	{
-		if (StateMachine == nullptr) return;
-		
 		StateMachine->ChangeState(EDragonCharacterStateID::Fall);
 	}
-	else
-	{
-		Character->SetActorRotation(FRotator(0.f, Character->GetLookRotation().Yaw, 0.f));
-		Character->LockLookDirYaw();
-		
-		FVector DirX(Character->InputMoveValue.X * Character->GetActorRightVector());
-		FVector DirY(Character->InputMoveValue.Y * Character->GetActorForwardVector());
-		FVector Dir = DirX + DirY;
-		Character->AddMovementInput(Dir);
-	}
+	
+	HandleWalkRotation(DeltaTime);
+	HandleWalk(DeltaTime);
 }
 
-void UDragonCharacterStateWalk::OnReceiveInputJump(float InputJump)
+void UDragonCharacterStateWalk::HandleWalk(float DeltaTime)	// Manage movements Walk behaviors
+{
+	FVector DirX(Character->InputMoveValue.X * Character->GetActorRightVector());
+	FVector DirY(Character->InputMoveValue.Y * Character->GetActorForwardVector());
+	FVector Dir = DirX + DirY;
+	Character->AddMovementInput(Dir);
+}
+
+void UDragonCharacterStateWalk::HandleWalkRotation(float DeltaTime)	// Manage rotation Walk behaviors
+{
+	Character->SetActorRotation(FRotator(0.f, Character->GetLookRotation().Yaw, 0.f));
+	Character->LockLookDirYaw();
+}
+
+void UDragonCharacterStateWalk::OnReceiveInputJump(float InputJump)	// Press Jump -> Jump
 {
 	if (StateMachine == nullptr) return;
 

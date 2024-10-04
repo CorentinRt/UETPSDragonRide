@@ -31,5 +31,12 @@ public:
 	float WalkSpeed = 500.f;
 
 	UFUNCTION()
+	void HandleWalk(float DeltaTime);
+
+	UFUNCTION()
+	void HandleWalkRotation(float DeltaTime);
+
+	
+	UFUNCTION()
 	void OnReceiveInputJump(float InputJump);
 };

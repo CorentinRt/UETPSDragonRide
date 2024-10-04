@@ -31,11 +31,11 @@ void UDragonCharacterStateJump::StateEnter(EDragonCharacterStateID PreviousState
 	
 	if (Character == nullptr) return;
 
-	Character->Jump();
+	Character->Jump();	// Jump
 
 	if (JumpMontage != nullptr)
 	{
-		Character->PlayAnimMontage(JumpMontage);
+		Character->PlayAnimMontage(JumpMontage);	// Play Anim
 	}
 }
 
@@ -49,14 +49,13 @@ void UDragonCharacterStateJump::StateTick(float DeltaTime)
 	Super::StateTick(DeltaTime);
 
 	if (Character == nullptr) return;
+	if (StateMachine == nullptr) return;
 	
-	if (Character->GetVelocity().Z < 0.f)
+	if (Character->GetVelocity().Z < 0.f)	// velocity fall -> Fall
 	{
-		if (StateMachine == nullptr) return;
-		
 		StateMachine->ChangeState(EDragonCharacterStateID::Fall);
 	}
-	else if (Character->GetCharacterMovement()->IsMovingOnGround())
+	else if (Character->GetCharacterMovement()->IsMovingOnGround())	// On Ground -> Idle
 	{
 		StateMachine->ChangeState(EDragonCharacterStateID::Idle);
 	}
