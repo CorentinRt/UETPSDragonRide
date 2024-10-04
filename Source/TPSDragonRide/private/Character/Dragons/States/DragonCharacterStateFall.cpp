@@ -33,10 +33,10 @@ void UDragonCharacterStateFall::StateEnter(EDragonCharacterStateID PreviousState
 
 	if (FallMontage != nullptr)
 	{
-		Character->PlayAnimMontage(FallMontage);
+		Character->PlayAnimMontage(FallMontage);	// Play Anim
 	}
 
-	Character->OnDragonCharacterFlyInput.AddDynamic(this, &UDragonCharacterStateFall::OnReceiveInputFly);
+	Character->OnDragonCharacterFlyInput.AddDynamic(this, &UDragonCharacterStateFall::OnReceiveInputFly);	// Bind fly
 }
 
 void UDragonCharacterStateFall::StateExit(EDragonCharacterStateID NextState)
@@ -52,7 +52,7 @@ void UDragonCharacterStateFall::StateTick(float DeltaTime)
 
 	if (Character == nullptr) return;
 	
-	if (Character->GetMovementComponent()->IsMovingOnGround())
+	if (Character->GetMovementComponent()->IsMovingOnGround())	// On Ground -> Idle
 	{
 		if (StateMachine == nullptr) return;
 		
@@ -60,16 +60,9 @@ void UDragonCharacterStateFall::StateTick(float DeltaTime)
 	}
 }
 
-void UDragonCharacterStateFall::OnReceiveInputFly(float InputFly)
+void UDragonCharacterStateFall::OnReceiveInputFly(float InputFly)	// press fly -> Fly
 {
 	if (StateMachine == nullptr) return;
-
-	GEngine->AddOnScreenDebugMessage(
-			-1,
-			3.f,
-			FColor::Orange,
-			TEXT("Fly trigger")
-		);
 	
 	StateMachine->ChangeState(EDragonCharacterStateID::Fly);
 }
