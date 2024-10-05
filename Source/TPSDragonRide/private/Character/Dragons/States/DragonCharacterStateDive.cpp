@@ -40,7 +40,6 @@ void UDragonCharacterStateDive::StateEnter(EDragonCharacterStateID PreviousState
 	{
 		Character->PlayAnimMontage(DiveMontage);	// Play anim
 	}
-
 	
 }
 
@@ -51,6 +50,7 @@ void UDragonCharacterStateDive::StateExit(EDragonCharacterStateID NextState)
 	if (Character == nullptr) return;
 
 	Character->SetCameraFOVToDefault();	// Reset FOV
+	
 }
 
 void UDragonCharacterStateDive::StateTick(float DeltaTime)
@@ -71,40 +71,6 @@ void UDragonCharacterStateDive::StateTick(float DeltaTime)
 			StateMachine->ChangeState(EDragonCharacterStateID::Fall);
 		}
 	}
-	else     // pressing fly
-	{
-		// Obsolete
-		/*
-		FRotator CurrentRotation = Character->GetActorRotation();
-		
-		// Rotation Plongée
-		float TargetPitch = -90.f;
-		
-		// Rotation Tonneau
-		float TargetRoll = CurrentRotation.Roll + Character->InputMoveValue.X * DeltaTime * 1500.f;
-		
-		// Smooth Rotation
-		FRotator TargetRotation = FRotator(TargetPitch, CurrentRotation.Yaw, TargetRoll);
-		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);
-		Character->SetActorRotation(NewRotation);
-
-		GEngine->AddOnScreenDebugMessage(
-			-1,
-			3.f,
-			FColor::Emerald,
-			FString::Printf(TEXT("Dive: %f"), TargetPitch)
-		);
-		
-		FVector NewVelocity = Character->GetCharacterMovement()->Velocity;
-		NewVelocity *= 0.8f;
-		
-		FVector ForwardDirection = Character->GetActorForwardVector();
-		
-		NewVelocity += ForwardDirection * 3500.f;
-		
-		Character->GetCharacterMovement()->Velocity = NewVelocity;
-		*/
-	}
 
 	HandleDiveRotation(DeltaTime);
 	HandleDive(DeltaTime);
@@ -114,12 +80,15 @@ void UDragonCharacterStateDive::HandleDiveRotation(float DeltaTime)	// Manager r
 {
 	FRotator CurrentRotation = Character->GetActorRotation();
 
-	float TargetPitch = -90.f;	// Rotation Dive
+	float TargetPitch = -80.f;	// Rotation Dive
 
-	float TargetRoll = CurrentRotation.Roll + Character->InputMoveValue.X * DeltaTime * 1500.f;	// Rotation Roll
+	//float TargetRoll = CurrentRotation.Roll + Character->InputMoveValue.X * DeltaTime * 1500.f;	// Rotation Roll (not used)
 
+	float TargetYaw = CurrentRotation.Yaw + Character->InputMoveValue.X * DeltaTime * 1500.f; // Rotation Yaw (used because of rotator's execution order)
 	
-	FRotator TargetRotation = FRotator(TargetPitch, CurrentRotation.Yaw, TargetRoll);
+	
+	//FRotator TargetRotation = FRotator(TargetPitch, CurrentRotation.Yaw, TargetRoll); // (not used -> see target yaw)
+	FRotator TargetRotation = FRotator(TargetPitch, TargetYaw, 0.f);	// test fix rot
 	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 8.0f);	// Smooth Rotation
 	Character->SetActorRotation(NewRotation);
 }
