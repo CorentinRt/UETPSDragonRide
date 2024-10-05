@@ -35,6 +35,8 @@ void UDragonCharacterStateFly::StateEnter(EDragonCharacterStateID PreviousState)
 	Character->GetCharacterMovement()->GravityScale = 0.f;
 	CurrentFlySpeed = Character->GetCharacterMovement()->Velocity.Size();
 	
+	Character->SetLookInFront(true);
+
 	
 	if (FlyMontage != nullptr)
 	{
@@ -51,8 +53,10 @@ void UDragonCharacterStateFly::StateExit(EDragonCharacterStateID NextState)
 
 	if (Character == nullptr) return;
 
-	Character->SetCameraTargetPositionToCenter();
-
+	Character->SetCameraTargetPositionToCenterY();
+	Character->SetCameraTargetPositionToCenterZ();
+	
+	
 	// fly / Fall / Dive / BoostFly -> reset currentGravityApplied
 	if (!(NextState == EDragonCharacterStateID::Fly || NextState == EDragonCharacterStateID::Fall || NextState == EDragonCharacterStateID::Dive || NextState == EDragonCharacterStateID::BoostFly))
 	{
@@ -63,6 +67,7 @@ void UDragonCharacterStateFly::StateExit(EDragonCharacterStateID NextState)
 	if (!(NextState == EDragonCharacterStateID::Fly || NextState == EDragonCharacterStateID::Dive || NextState == EDragonCharacterStateID::BoostFly))
 	{
 		Character->GetCharacterMovement()->GravityScale = 1.0f;
+		Character->SetLookInFront(false);
 	}
 
 	Character->OnDragonCharacterDiveInput.RemoveDynamic(this, &UDragonCharacterStateFly::OnReceiveInputDive);
@@ -116,17 +121,30 @@ void UDragonCharacterStateFly::HandleFly(float DeltaTime)	// Manage moving fly b
 	if (Character == nullptr) return;
 
 	
-	if (Character->InputMoveValue.X < -0.1f)	// if joystick left -> camera to left
+	if (Character->InputLookValue.X < -0.1f)	// if joystick left -> camera to left
 	{
-		Character->SetCameraTargetPositionToLeft();
+		Character->SetCameraTargetPositionToOffsetY(Character->InputLookValue.X);
 	}
-	else if (Character->InputMoveValue.X > 0.1f)	// if joystick right -> camera to right
+	else if (Character->InputLookValue.X > 0.1f)	// if joystick right -> camera to right
 	{
-		Character->SetCameraTargetPositionToRight();
+		Character->SetCameraTargetPositionToOffsetY(Character->InputLookValue.X);
 	}
 	else     // if joystick center -> camera to center
 	{
-		Character->SetCameraTargetPositionToCenter();
+		Character->SetCameraTargetPositionToCenterY();
+	}
+
+	if (Character->InputLookValue.Y < -0.1f)	// if joystick down -> camera to bottom
+	{
+		Character->SetCameraTargetPositionToOffsetZ(Character->InputLookValue.Y);
+	}
+	else if (Character->InputLookValue.Y > 0.1f)	// if joystick up -> camera to top
+	{
+		Character->SetCameraTargetPositionToOffsetZ(Character->InputLookValue.Y);
+	}
+	else     // if joystick center -> camera to center
+	{
+		Character->SetCameraTargetPositionToCenterZ();
 	}
 
 	

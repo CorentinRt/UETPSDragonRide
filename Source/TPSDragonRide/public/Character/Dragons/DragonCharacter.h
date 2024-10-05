@@ -68,6 +68,15 @@ public:
 	UPROPERTY()
 	float LookHorizontalSensitivity = 100.f;
 
+	UPROPERTY()
+	bool UseLookInFront = false;
+
+	UFUNCTION()
+	void SetLookInFront(bool Value);
+
+	UFUNCTION()
+	bool GetLookInFront();
+	
 	UFUNCTION()
 	void InitLookSensitivity();
 
@@ -76,10 +85,13 @@ public:
 	
 	UFUNCTION()
 	void UpdateLookDir(FVector2D LookDir, float DeltaTime);
-
+	
 	UFUNCTION()
 	void CenterLookDir(float DeltaTime);
 
+	UFUNCTION()
+	void UpdateLookInFrontDir(FVector2D LookInFrontDir, float DeltaTime);
+	
 	UFUNCTION()
 	void LockLookDirYaw();
 
@@ -166,21 +178,30 @@ protected:
 	FVector CameraDefaultPosition;
 
 	UPROPERTY()
-	int CurrentCameraPosition = 0;
+	float CurrentCameraPositionY = 0.f;
 
+	UPROPERTY()
+	float CurrentCameraPositionZ = 0.f;
+	
 	UPROPERTY(EditAnywhere)
 	float CameraYOffsets = 800.f;
+
+	UPROPERTY(EditAnywhere)
+	float CameraZOffsets = 400.f;
 	
 	UFUNCTION()
 	void HandleCameraPosition(float DeltaTime);
 
 public:
 	UFUNCTION()
-	void SetCameraTargetPositionToLeft();
+	void SetCameraTargetPositionToOffsetY(float Percent);
 	UFUNCTION()
-	void SetCameraTargetPositionToCenter();
+	void SetCameraTargetPositionToCenterY();
+
 	UFUNCTION()
-	void SetCameraTargetPositionToRight();
+	void SetCameraTargetPositionToOffsetZ(float Percent);
+	UFUNCTION()
+	void SetCameraTargetPositionToCenterZ();
 
 #pragma endregion
 	

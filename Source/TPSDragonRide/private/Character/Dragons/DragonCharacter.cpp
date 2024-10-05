@@ -10,6 +10,7 @@
 #include "Character/Dragons/DragonCharacterStateMachine.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values
@@ -24,6 +25,11 @@ ADragonCharacter::ADragonCharacter()
 	SpringArmComponent->SetupAttachment(RootComponent);
 	CameraComponent->SetupAttachment(SpringArmComponent);
 	SpringArmComponent->TargetArmLength = 2000.f;
+	SpringArmComponent->bEnableCameraLag = true;
+	SpringArmComponent->CameraLagMaxDistance = 100.f;
+	SpringArmComponent->CameraLagSpeed = 5.f;
+	SpringArmComponent->bEnableCameraRotationLag = true;
+	SpringArmComponent->CameraRotationLagSpeed = 20.f;
 	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 700.f));
 }
 
@@ -98,6 +104,16 @@ void ADragonCharacter::ReceiveLookInput(FVector2D LookValue)	// Receive Look
 	OnDragonCharacterLookInput.Broadcast(InputLookValue);
 }
 
+void ADragonCharacter::SetLookInFront(bool Value)
+{
+	UseLookInFront = Value;
+}
+
+bool ADragonCharacter::GetLookInFront()
+{
+	return UseLookInFront;
+}
+
 void ADragonCharacter::InitLookSensitivity()	// Init sensitivity
 {
 	const UCharacterSettings* CharacterSettings = GetDefault<UCharacterSettings>();
@@ -121,6 +137,13 @@ void ADragonCharacter::UpdateLookDir(FVector2D LookDir, float DeltaTime)	// Mana
 	if (SpringArmComponent == nullptr) return;
 
 	HasUpdatedLookDir = true;	// avoids auto center if updated
+
+	if (UseLookInFront)
+	{
+		UpdateLookInFrontDir(LookDir, DeltaTime);
+		return;
+	}
+	
 	
 	FRotator TempRot = SpringArmComponent->GetRelativeRotation();
 	FRotator AddRot(0.f, 0.f, 0.f);
@@ -135,6 +158,7 @@ void ADragonCharacter::UpdateLookDir(FVector2D LookDir, float DeltaTime)	// Mana
 	SpringArmComponent->SetRelativeRotation(TempRot + AddRot);
 }
 
+
 void ADragonCharacter::CenterLookDir(float DeltaTime)	// Auto center Look
 {
 	if (SpringArmComponent == nullptr || HasUpdatedLookDir)	// look not updated -> center
@@ -147,6 +171,11 @@ void ADragonCharacter::CenterLookDir(float DeltaTime)	// Auto center Look
 	FRotator TempRot = FMath::RInterpTo(SpringArmComponent->GetRelativeRotation(), FRotator(-15.f, 0.f, 0.f), DeltaTime, 3.f);
 
 	SpringArmComponent->SetRelativeRotation(TempRot);
+}
+
+void ADragonCharacter::UpdateLookInFrontDir(FVector2D LookInFrontDir, float DeltaTime)
+{
+	
 }
 
 void ADragonCharacter::LockLookDirYaw()	// Lock spring arm Yaw + Roll
@@ -201,8 +230,10 @@ void ADragonCharacter::HandleCameraPosition(float DeltaTime)	// Manager Camera O
 	
 	FVector CurrentRelLocation = CameraComponent->GetRelativeLocation();
 
-	CurrentRelLocation.Y = FMath::FInterpTo(CurrentRelLocation.Y, (CameraYOffsets + CameraDefaultPosition.Y) * CurrentCameraPosition, DeltaTime, 2.f);
+	CurrentRelLocation.Y = FMath::FInterpTo(CurrentRelLocation.Y, (CameraYOffsets + CameraDefaultPosition.Y) * CurrentCameraPositionY, DeltaTime, 2.f);
 
+	CurrentRelLocation.Z = FMath::FInterpTo(CurrentRelLocation.Z, (CameraZOffsets + CameraDefaultPosition.Z) * CurrentCameraPositionZ, DeltaTime, 2.f);
+	
 	/*
 	GEngine->AddOnScreenDebugMessage(
 				-1,
@@ -215,29 +246,36 @@ void ADragonCharacter::HandleCameraPosition(float DeltaTime)	// Manager Camera O
 	CameraComponent->SetRelativeLocation(CurrentRelLocation);
 }
 
-void ADragonCharacter::SetCameraTargetPositionToLeft()	// Camera to Left
+void ADragonCharacter::SetCameraTargetPositionToOffsetY(float Percent)	// Camera to Left
 {
 	if (CameraComponent == nullptr) return;
-	if (CurrentCameraPosition == -1) return;
 
-	CurrentCameraPosition = -1;
+	CurrentCameraPositionY = Percent;
 }
 
-void ADragonCharacter::SetCameraTargetPositionToCenter()	// Camera to Center
+void ADragonCharacter::SetCameraTargetPositionToCenterY()	// Camera to Center
 {
 	if (CameraComponent == nullptr) return;
-	if (CurrentCameraPosition == 0) return;
+	if (CurrentCameraPositionY == 0.f) return;
 
-	CurrentCameraPosition = 0;
+	CurrentCameraPositionY = 0.f;
 }
 
-void ADragonCharacter::SetCameraTargetPositionToRight()	// Camera to Right
+void ADragonCharacter::SetCameraTargetPositionToOffsetZ(float Percent)
 {
 	if (CameraComponent == nullptr) return;
-	if (CurrentCameraPosition == 1) return;
 
-	CurrentCameraPosition = 1;
+	CurrentCameraPositionZ = Percent;
 }
+
+void ADragonCharacter::SetCameraTargetPositionToCenterZ()
+{
+	if (CameraComponent == nullptr) return;
+	if (CurrentCameraPositionZ == 0.f) return;
+
+	CurrentCameraPositionZ = 0.f;
+}
+
 
 #pragma endregion
 
