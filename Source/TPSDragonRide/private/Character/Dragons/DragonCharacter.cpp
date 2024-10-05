@@ -69,7 +69,9 @@ void ADragonCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 }
 
-void ADragonCharacter::BindReceiveInputToController() const
+
+#pragma region ReceiveInputFromController
+void ADragonCharacter::BindReceiveInputToController() const	// Bind controller's Input to Actions
 {
 	if (ControllerChara == nullptr) return;
 
@@ -81,7 +83,7 @@ void ADragonCharacter::BindReceiveInputToController() const
 	ControllerChara->InputBoostFlyEvent.AddDynamic(this, &ADragonCharacter::ReceiveBoostFlyInput);
 }
 
-void ADragonCharacter::ReceiveMoveInput(FVector2D MoveValue)
+void ADragonCharacter::ReceiveMoveInput(FVector2D MoveValue)	// Receive Move
 {
 	InputMoveValue = MoveValue;
 	OnDragonCharacterMoveInput.Broadcast(InputMoveValue);
@@ -89,14 +91,14 @@ void ADragonCharacter::ReceiveMoveInput(FVector2D MoveValue)
 
 
 #pragma region Look
-void ADragonCharacter::ReceiveLookInput(FVector2D LookValue)
+void ADragonCharacter::ReceiveLookInput(FVector2D LookValue)	// Receive Look
 {
 	InputLookValue = LookValue;
 	UpdateLookDir(LookValue, GetWorld()->GetDeltaSeconds());
 	OnDragonCharacterLookInput.Broadcast(InputLookValue);
 }
 
-void ADragonCharacter::InitLookSensitivity()
+void ADragonCharacter::InitLookSensitivity()	// Init sensitivity
 {
 	const UCharacterSettings* CharacterSettings = GetDefault<UCharacterSettings>();
 
@@ -106,7 +108,7 @@ void ADragonCharacter::InitLookSensitivity()
 	LookHorizontalSensitivity = GetDefault<UCharacterSettings>()->MouseVerticalSensitivity;
 }
 
-FRotator ADragonCharacter::GetLookRotation()
+FRotator ADragonCharacter::GetLookRotation()	// Return look rotation
 {
 	if (SpringArmComponent == nullptr) return FRotator();
 
@@ -114,40 +116,40 @@ FRotator ADragonCharacter::GetLookRotation()
 }
 
 
-void ADragonCharacter::UpdateLookDir(FVector2D LookDir, float DeltaTime)
+void ADragonCharacter::UpdateLookDir(FVector2D LookDir, float DeltaTime)	// Manager rotations look behaviors
 {
 	if (SpringArmComponent == nullptr) return;
 
-	HasUpdatedLookDir = true;
+	HasUpdatedLookDir = true;	// avoids auto center if updated
 	
 	FRotator TempRot = SpringArmComponent->GetRelativeRotation();
-
 	FRotator AddRot(0.f, 0.f, 0.f);
 
-	if (FMath::Abs(TempRot.Pitch) < 70.f)
+	if (FMath::Abs(TempRot.Pitch) < 70.f)	// Pitch < 70 -> rotate springArm Up/Down
 	{
 		AddRot.Pitch = LookDir.Y * DeltaTime * LookVerticalSensitivity;
 	}
 
-	AddRot.Yaw = LookDir.X * DeltaTime * LookHorizontalSensitivity;
+	AddRot.Yaw = LookDir.X * DeltaTime * LookHorizontalSensitivity;	// Rotate springArm Left/Right
 	
 	SpringArmComponent->SetRelativeRotation(TempRot + AddRot);
 }
 
-void ADragonCharacter::CenterLookDir(float DeltaTime)
+void ADragonCharacter::CenterLookDir(float DeltaTime)	// Auto center Look
 {
-	if (SpringArmComponent == nullptr || HasUpdatedLookDir)
+	if (SpringArmComponent == nullptr || HasUpdatedLookDir)	// look not updated -> center
 	{
 		HasUpdatedLookDir = false;
 		return;
 	}
 
+	// Smooth center
 	FRotator TempRot = FMath::RInterpTo(SpringArmComponent->GetRelativeRotation(), FRotator(-15.f, 0.f, 0.f), DeltaTime, 3.f);
 
 	SpringArmComponent->SetRelativeRotation(TempRot);
 }
 
-void ADragonCharacter::LockLookDirYaw()
+void ADragonCharacter::LockLookDirYaw()	// Lock spring arm Yaw + Roll
 {
 	if (SpringArmComponent == nullptr) return;
 
@@ -155,32 +157,45 @@ void ADragonCharacter::LockLookDirYaw()
 }
 #pragma endregion 
 
-void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)
+#pragma region Jump
+void ADragonCharacter::ReceiveJumpInput(float Jumpvalue)	// Receive Jump
 {
 	OnDragonCharacterJumpInput.Broadcast(Jumpvalue);
 }
 
-void ADragonCharacter::ReceiveFlyInput(float FlyValue)
+#pragma endregion
+
+#pragma region Fly
+void ADragonCharacter::ReceiveFlyInput(float FlyValue)	// Receive Fly
 {
 	InputFlyValue = FlyValue;
 	OnDragonCharacterFlyInput.Broadcast(InputFlyValue);
 }
 
+#pragma endregion
 
-#pragma region State Machine
-void ADragonCharacter::ReceiveDiveInput(float DiveValue)
+#pragma region Dive
+void ADragonCharacter::ReceiveDiveInput(float DiveValue)	// Receive Dive
 {
 	InputDiveValue = DiveValue;
 	OnDragonCharacterDiveInput.Broadcast(InputDiveValue);
 }
 
-void ADragonCharacter::ReceiveBoostFlyInput(float BoostValue)
+#pragma endregion
+
+#pragma region BoostFly
+void ADragonCharacter::ReceiveBoostFlyInput(float BoostValue)	// Receive Boost Fly
 {
 	OnDragonCharacterBoostFlyInput.Broadcast(BoostValue);
 }
 
+#pragma endregion
 
-void ADragonCharacter::HandleCameraPosition(float DeltaTime)
+#pragma endregion 
+
+
+#pragma region Camera
+void ADragonCharacter::HandleCameraPosition(float DeltaTime)	// Manager Camera Offsets
 {
 	if (CameraComponent == nullptr) return;
 	
@@ -188,17 +203,19 @@ void ADragonCharacter::HandleCameraPosition(float DeltaTime)
 
 	CurrentRelLocation.Y = FMath::FInterpTo(CurrentRelLocation.Y, (CameraYOffsets + CameraDefaultPosition.Y) * CurrentCameraPosition, DeltaTime, 2.f);
 
+	/*
 	GEngine->AddOnScreenDebugMessage(
 				-1,
 				3.f,
 				FColor::Orange,
 				FString::Printf(TEXT("CameraXOffset: %f"), CurrentRelLocation.Y)
 			);
+	*/
 	
 	CameraComponent->SetRelativeLocation(CurrentRelLocation);
 }
 
-void ADragonCharacter::SetCameraTargetPositionToLeft()
+void ADragonCharacter::SetCameraTargetPositionToLeft()	// Camera to Left
 {
 	if (CameraComponent == nullptr) return;
 	if (CurrentCameraPosition == -1) return;
@@ -206,7 +223,7 @@ void ADragonCharacter::SetCameraTargetPositionToLeft()
 	CurrentCameraPosition = -1;
 }
 
-void ADragonCharacter::SetCameraTargetPositionToCenter()
+void ADragonCharacter::SetCameraTargetPositionToCenter()	// Camera to Center
 {
 	if (CameraComponent == nullptr) return;
 	if (CurrentCameraPosition == 0) return;
@@ -214,7 +231,7 @@ void ADragonCharacter::SetCameraTargetPositionToCenter()
 	CurrentCameraPosition = 0;
 }
 
-void ADragonCharacter::SetCameraTargetPositionToRight()
+void ADragonCharacter::SetCameraTargetPositionToRight()	// Camera to Right
 {
 	if (CameraComponent == nullptr) return;
 	if (CurrentCameraPosition == 1) return;
@@ -222,19 +239,22 @@ void ADragonCharacter::SetCameraTargetPositionToRight()
 	CurrentCameraPosition = 1;
 }
 
+#pragma endregion
+
+#pragma region State Machine
 void ADragonCharacter::CreateStateMachine()
 {
 	StateMachine = NewObject<UDragonCharacterStateMachine>();
 }
 
-void ADragonCharacter::InitStateMachine()
+void ADragonCharacter::InitStateMachine()	// Call Init StateMachine
 {
 	if (StateMachine == nullptr) return;
 	
 	StateMachine->Init(this);
 }
 
-void ADragonCharacter::TickStateMachine(float DeltaTime) const
+void ADragonCharacter::TickStateMachine(float DeltaTime) const	// Call Tick StateMachine
 {
 	if (StateMachine == nullptr) return;
 	

@@ -33,6 +33,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	
+#pragma region ReceiveInputFromController
+	
 	UFUNCTION()
 	void BindReceiveInputToController() const;
 
@@ -126,8 +129,29 @@ public:
 	UFUNCTION()
 	void ReceiveBoostFlyInput(float BoostValue);
 	
+#pragma endregion
+
 #pragma endregion 
+
 	
+#pragma region Camera
+
+	// Components
+protected:
+	UPROPERTY()
+	TObjectPtr<ACharacterController> ControllerChara;
+	
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UCameraComponent> CameraComponent;
+	
+	UPROPERTY()
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	// FOV
+protected:
+	UPROPERTY()
+	float DefaultFOVValue;
+
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetCameraFOVToDefault();
@@ -135,15 +159,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SetCameraFOVToFlyBoost();
 	
-protected:
-	UPROPERTY()
-	TObjectPtr<ACharacterController> ControllerChara;
 
-#pragma region Camera
-	
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UCameraComponent> CameraComponent;
-	
+	// Offsets position
+protected:
 	UPROPERTY()
 	FVector CameraDefaultPosition;
 
@@ -164,15 +182,7 @@ public:
 	UFUNCTION()
 	void SetCameraTargetPositionToRight();
 
-protected:
-	UPROPERTY()
-	float DefaultFOVValue;
-	
-	UPROPERTY()
-	TObjectPtr<USpringArmComponent> SpringArmComponent;
-
 #pragma endregion
-
 	
 #pragma region State Machine
 public:
