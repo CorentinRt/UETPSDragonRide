@@ -61,9 +61,13 @@ void ACharacterController::SetupInputComponent()
 	BindMoveAction(EnhancedInputComponent);
 	BindLookAction(EnhancedInputComponent);
 	BindJumpAction(EnhancedInputComponent);
+
+#pragma region DragonBind
 	BindFlyAction(EnhancedInputComponent);
 	BindDiveAction(EnhancedInputComponent);
 	BindBoostFlyAction(EnhancedInputComponent);
+#pragma endregion
+	
 }
 
 void ACharacterController::MoveAction(const FInputActionValue& InputActionValue)

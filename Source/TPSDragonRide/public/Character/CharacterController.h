@@ -38,6 +38,14 @@ protected:
 	virtual void SetupInputComponent() override;
 #pragma endregion
 
+#pragma region Change Bind Actions on Possess
+
+void BindPlayerDragonActions();
+void BindPlayerKnightActions();
+	
+#pragma endregion 
+
+	
 #pragma region Bind Actions
 
 protected:
