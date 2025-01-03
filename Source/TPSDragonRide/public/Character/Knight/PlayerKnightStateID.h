@@ -17,5 +17,6 @@ enum class EPlayerKnightStateID : uint8
 	WALKING,
 	RUNNING,
 	CROUCHING,
-	FALLING
+	FALLING,
+	JUMP
 };

@@ -25,15 +25,20 @@ void UPlayerKnightStateIdle::StateEnter(EPlayerKnightStateID PreviousState)
 		-1,
 		3.f,
 		FColor::Emerald,
-		TEXT("EnterIdle")
+		TEXT("Enter Idle")
 	);
 	
-	if (Character == nullptr) return;
-	
-	if (IdleMontage != nullptr)
+	if (Character != nullptr)
 	{
-		Character->PlayAnimMontage(IdleMontage);	// Play Anim
+		if (IdleMontage != nullptr)
+		{
+			Character->PlayAnimMontage(IdleMontage);	// Play Anim
+		}
+
+		Character->OnPlayerKnightCharacterJumpInput.AddDynamic(this, &UPlayerKnightStateIdle::OnJump);
 	}
+
+	
 }
 
 void UPlayerKnightStateIdle::StateEnter(EPlayerKnightStateID PreviousState, int SubStateID)
@@ -45,7 +50,12 @@ void UPlayerKnightStateIdle::StateEnter(EPlayerKnightStateID PreviousState, int 
 void UPlayerKnightStateIdle::StateExit(EPlayerKnightStateID NextState)
 {
 	Super::StateExit(NextState);
+
 	
+	if (Character != nullptr)
+	{
+		Character->OnPlayerKnightCharacterJumpInput.RemoveDynamic(this, &UPlayerKnightStateIdle::OnJump);
+	}
 }
 
 void UPlayerKnightStateIdle::StateTick(float DeltaTime)
@@ -71,11 +81,11 @@ void UPlayerKnightStateIdle::CheckStartWalking()
 		
 		StateMachine->ChangeState(EPlayerKnightStateID::FALLING);
 	}
+}
 
-	GEngine->AddOnScreenDebugMessage(
-			-1,
-			3.f,
-			FColor::Emerald,
-			FString::Printf(TEXT("Walking: %f / %f"), Character->InputMoveValue.X, Character->InputMoveValue.Y)
-		);
+void UPlayerKnightStateIdle::OnJump(float InJumpValue)
+{
+	if (StateMachine == nullptr) return;
+
+	StateMachine->ChangeState(EPlayerKnightStateID::JUMP);
 }

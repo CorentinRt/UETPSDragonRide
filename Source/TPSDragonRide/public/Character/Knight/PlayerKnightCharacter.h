@@ -68,7 +68,7 @@ public:
 	
 #pragma region Move
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterMoveInput, FVector2D, InputMove);
-	FOnDragonCharacterMoveInput OnDragonCharacterMoveInput;
+	FOnDragonCharacterMoveInput OnPlayerKnightCharacterMoveInput;
 	
 	UFUNCTION()
 	void ReceiveMoveInput(FVector2D MoveValue);
@@ -80,7 +80,7 @@ public:
 
 #pragma region Look
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterLookInput, FVector2D, InputLook);
-	FOnDragonCharacterLookInput OnDragonCharacterLookInput;
+	FOnDragonCharacterLookInput OnPlayerKnightCharacterLookInput;
 	
 	UFUNCTION()
 	void ReceiveLookInput(FVector2D LookValue);
@@ -128,7 +128,7 @@ public:
 
 #pragma region Jump
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDragonCharacterJumpInput, float, InputJump);
-	FOnDragonCharacterJumpInput OnDragonCharacterJumpInput;
+	FOnDragonCharacterJumpInput OnPlayerKnightCharacterJumpInput;
 	
 	UFUNCTION()
 	void ReceiveJumpInput(float Jumpvalue);

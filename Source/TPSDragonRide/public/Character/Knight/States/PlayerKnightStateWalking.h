@@ -35,4 +35,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* WalkingMontage;
+
+	
+	UFUNCTION()
+	void OnJump(float InJumpValue);
 };

@@ -83,7 +83,7 @@ void APlayerKnightCharacter::InitStateMachine()
 void APlayerKnightCharacter::ReceiveMoveInput(FVector2D MoveValue)	// Receive Move
 {
 	InputMoveValue = MoveValue;
-	OnDragonCharacterMoveInput.Broadcast(InputMoveValue);
+	OnPlayerKnightCharacterMoveInput.Broadcast(InputMoveValue);
 }
 
 
@@ -92,7 +92,7 @@ void APlayerKnightCharacter::ReceiveLookInput(FVector2D LookValue)	// Receive Lo
 {
 	InputLookValue = LookValue;
 	UpdateLookDir(LookValue, GetWorld()->GetDeltaSeconds());
-	OnDragonCharacterLookInput.Broadcast(InputLookValue);
+	OnPlayerKnightCharacterLookInput.Broadcast(InputLookValue);
 }
 
 void APlayerKnightCharacter::SetLookInFront(bool Value)
@@ -180,7 +180,7 @@ void APlayerKnightCharacter::LockLookDirYaw()	// Lock spring arm Yaw + Roll
 #pragma region Jump
 void APlayerKnightCharacter::ReceiveJumpInput(float Jumpvalue)	// Receive Jump
 {
-	OnDragonCharacterJumpInput.Broadcast(Jumpvalue);
+	OnPlayerKnightCharacterJumpInput.Broadcast(Jumpvalue);
 }
 
 #pragma endregion

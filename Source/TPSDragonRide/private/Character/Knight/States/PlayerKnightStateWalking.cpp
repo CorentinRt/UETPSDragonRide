@@ -25,8 +25,14 @@ void UPlayerKnightStateWalking::StateEnter(EPlayerKnightStateID PreviousState)
 		-1,
 		3.f,
 		FColor::Emerald,
-		TEXT("EnterWalking")
+		TEXT("Enter Walking")
 	);
+
+
+	if (Character != nullptr)
+	{
+		Character->OnPlayerKnightCharacterJumpInput.AddDynamic(this, &UPlayerKnightStateWalking::OnJump);
+	}
 }
 
 void UPlayerKnightStateWalking::StateEnter(EPlayerKnightStateID PreviousState, int SubStateID)
@@ -38,7 +44,12 @@ void UPlayerKnightStateWalking::StateEnter(EPlayerKnightStateID PreviousState, i
 void UPlayerKnightStateWalking::StateExit(EPlayerKnightStateID NextState)
 {
 	Super::StateExit(NextState);
-	
+
+
+	if (Character != nullptr)
+	{
+		Character->OnPlayerKnightCharacterJumpInput.RemoveDynamic(this, &UPlayerKnightStateWalking::OnJump);
+	}
 }
 
 void UPlayerKnightStateWalking::StateTick(float DeltaTime)
@@ -55,13 +66,6 @@ void UPlayerKnightStateWalking::StateTick(float DeltaTime)
 
 void UPlayerKnightStateWalking::HandleWalk(float DeltaTime)	// Manage movements Walk behaviors
 {
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Red,
-		TEXT("Tick")
-	);
-	
 	FVector DirX(Character->InputMoveValue.X * Character->GetActorRightVector());
 	FVector DirY(Character->InputMoveValue.Y * Character->GetActorForwardVector());
 	FVector Dir = DirX + DirY;
@@ -84,4 +88,11 @@ void UPlayerKnightStateWalking::CheckStillWalking()
 	{
 		StateMachine->ChangeState(EPlayerKnightStateID::FALLING);
 	}
+}
+
+void UPlayerKnightStateWalking::OnJump(float InJumpValue)
+{
+	if (StateMachine == nullptr) return;
+
+	StateMachine->ChangeState(EPlayerKnightStateID::JUMP);
 }

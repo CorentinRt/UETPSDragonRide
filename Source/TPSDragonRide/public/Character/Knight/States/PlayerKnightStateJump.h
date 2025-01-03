@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Character/Knight/PlayerKnightState.h"
-#include "PlayerKnightStateRunning.generated.h"
+#include "PlayerKnightStateJump.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TPSDRAGONRIDE_API UPlayerKnightStateRunning : public UPlayerKnightState
+class TPSDRAGONRIDE_API UPlayerKnightStateJump : public UPlayerKnightState
 {
 	GENERATED_BODY()
 
@@ -27,9 +27,9 @@ public:
 	
 	virtual void StateTick(float DeltaTime);
 
-	
-private:
 
-	UFUNCTION()
-	void OnJump(float InJumpValue);
+private:
+	void Jump();
+
+	void EndJump();
 };

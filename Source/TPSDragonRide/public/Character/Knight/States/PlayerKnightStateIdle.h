@@ -31,8 +31,11 @@ public:
 
 private:
 	void CheckStartWalking();
-
 	
 	UPROPERTY(EditAnywhere)
 	UAnimMontage* IdleMontage;
+
+
+	UFUNCTION()
+	void OnJump(float InJumpValue);
 };

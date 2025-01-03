@@ -3,6 +3,9 @@
 
 #include "Character/Knight/States/PlayerKnightStateRunning.h"
 
+#include "Character/Knight/PlayerKnightCharacter.h"
+#include "Character/Knight/PlayerKnightStateMachine.h"
+
 EPlayerKnightStateID UPlayerKnightStateRunning::GetStateID() const
 {
 	return EPlayerKnightStateID::RUNNING;
@@ -17,7 +20,18 @@ void UPlayerKnightStateRunning::StateInit(UPlayerKnightStateMachine* InStateMach
 void UPlayerKnightStateRunning::StateEnter(EPlayerKnightStateID PreviousState)
 {
 	Super::StateEnter(PreviousState);
-	
+
+	GEngine->AddOnScreenDebugMessage(
+		-1,
+		3.f,
+		FColor::Emerald,
+		TEXT("Enter Running")
+	);
+
+	if (Character != nullptr)
+	{
+		Character->OnPlayerKnightCharacterJumpInput.AddDynamic(this, &UPlayerKnightStateRunning::OnJump);
+	}
 }
 
 void UPlayerKnightStateRunning::StateEnter(EPlayerKnightStateID PreviousState, int SubStateID)
@@ -29,11 +43,23 @@ void UPlayerKnightStateRunning::StateEnter(EPlayerKnightStateID PreviousState, i
 void UPlayerKnightStateRunning::StateExit(EPlayerKnightStateID NextState)
 {
 	Super::StateExit(NextState);
+
 	
+	if (Character != nullptr)
+	{
+		Character->OnPlayerKnightCharacterJumpInput.RemoveDynamic(this, &UPlayerKnightStateRunning::OnJump);
+	}
 }
 
 void UPlayerKnightStateRunning::StateTick(float DeltaTime)
 {
 	Super::StateTick(DeltaTime);
 	
+}
+
+void UPlayerKnightStateRunning::OnJump(float InJumpValue)
+{
+	if (StateMachine == nullptr) return;
+
+	StateMachine->ChangeState(EPlayerKnightStateID::JUMP);
 }
